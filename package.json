@@ -1,0 +1,48 @@
+{
+  "name": "personal-api",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Typescript API Boilerplate for Fastify",
+  "author": "Dustin Rouillard <code@dustin.sh>",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "node dist/server.js",
+    "run": "ts-node --files src/server.ts",
+    "dev": "nodemon"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/cron": "^1.7.2",
+    "@types/module-alias": "^2.0.0",
+    "@types/node": "^13.11.1",
+    "@types/xml2js": "^0.4.5",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "eslint": "^7.0.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.5",
+    "ts-node": "^8.8.2",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@dustinrouillard/database-connectors": "^1.0.2",
+    "@dustinrouillard/fastify-security": "^1.0.1",
+    "@dustinrouillard/fastify-utilities": "^1.0.3",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
+    "fastify": "^2.14.1",
+    "module-alias": "^2.2.2",
+    "xml2js": "^0.4.23"
+  },
+  "_moduleAliases": {
+    "modules": "dist/modules",
+    "handlers": "dist/modules/handlers",
+    "helpers": "dist/modules/helpers",
+    "config": "dist/modules/config",
+    "tasks": "dist/modules/tasks"
+  }
+}

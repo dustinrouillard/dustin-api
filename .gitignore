@@ -1,0 +1,20 @@
+# Built code
+dist
+
+# Mac is bad
+.DS_Store
+
+# Node
+node_modules
+
+# We use yarn
+package-lock.json
+yarn-error.log
+
+# Development volumes and stuff
+development
+
+# Ignore environment files
+.env.*
+.env
+!.env.example
