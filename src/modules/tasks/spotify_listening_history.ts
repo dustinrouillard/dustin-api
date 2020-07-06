@@ -14,6 +14,9 @@ async function LogSpotifyListenHistory(): Promise<void> {
   // Ignore if nothing is playing
   if (!spotify_playing.is_playing) return;
 
+  // Ignore if less than 7 seconds in
+  if (spotify_playing.item_progress && spotify_playing.item_progress < 7000) return;
+
   // Get the last spotify entry where the id matches (if one does)
   const last_spotify_entry: DatabaseSpotifyHistory | Types.Row = (
     await CassandraClient.execute('SELECT item_id, item_length_ms, date FROM spotify_song_history WHERE item_id = ?  ALLOW FILTERING', [spotify_playing.item_id])
