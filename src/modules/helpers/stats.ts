@@ -80,7 +80,7 @@ async function GetBuildsRan(start: Date, end: Date): Promise<number> {
 }
 
 export async function FetchStatistics(): Promise<Stats> {
-  const start = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000);
+  const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
   const end = new Date();
   start.setUTCHours(0, 0, 0, 0);
   end.setUTCHours(0, 0, 0, 0);
