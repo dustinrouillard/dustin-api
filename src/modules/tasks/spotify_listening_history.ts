@@ -22,8 +22,8 @@ async function LogSpotifyListenHistory(): Promise<void> {
     await CassandraClient.execute('SELECT item_id, item_length_ms, date FROM spotify_song_history WHERE item_id = ?  ALLOW FILTERING', [spotify_playing.item_id])
   ).first();
 
-  // Ignore the entry if it's the same id
-  if (last_spotify_entry && new Date(last_spotify_entry.date).getTime() + last_spotify_entry.item_length_ms < new Date().getTime()) return;
+  // Ignore the entry if it's the same id and we've not let enough time for the entire duration
+  if (last_spotify_entry && new Date().getTime() - last_spotify_entry.item_length_ms <= new Date(last_spotify_entry.date).getTime()) return;
 
   // Store the entry in the database
   await CassandraClient.execute(
