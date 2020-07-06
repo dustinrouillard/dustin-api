@@ -33,6 +33,7 @@ export interface Device {
 
 export interface Item {
   album: Album;
+  show?: Show;
   artists: Artist[];
   available_markets: string[];
   disc_number: number;
@@ -48,6 +49,24 @@ export interface Item {
   track_number: number;
   type: string;
   uri: string;
+}
+
+export interface Show {
+  description: string;
+  id: string;
+  languages: string[];
+  media_type: string;
+  href: string;
+  uri: string;
+  total_episodes: number;
+  available_markets: string[];
+  is_externally_hosted: boolean;
+  explicit: boolean;
+  publisher: string;
+  type: string;
+  images: Image[];
+  external_urls: ExternalUrls;
+  name: string;
 }
 
 export interface Album {

@@ -99,11 +99,11 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
 
 export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
   // Get current track data from spotify
-  const current_track = await RequestWrapper<PlayerResponse>('https://api.spotify.com/v1/me/player', {
+  const current_track = await RequestWrapper<PlayerResponse>('https://api.spotify.com/v1/me/player?additional_types=episode', {
     headers: { authorization: `Bearer ${SpotifyAccount().access}` },
   });
 
-  if (current_track.currently_playing_type != 'track') return { is_playing: false };
+  if (!['track', 'episode'].includes(current_track.currently_playing_type)) return { is_playing: false };
 
   if (current_track.is_playing) {
     return {
@@ -112,9 +112,9 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
       device_type: current_track.device.type,
       item_name: current_track.item.name,
       item_type: current_track.item.type,
-      item_author: current_track.item.artists.map((artist) => artist.name).join(', '),
+      item_author: current_track.item.type == 'episode' ? current_track.item.show?.name : current_track.item.artists.map((artist) => artist.name).join(', '),
       item_id: current_track.item.id,
-      item_image: current_track.item.album.images[0].url,
+      item_image: current_track.item.show?.images[0].url,
       item_progress: current_track.progress_ms,
       item_length_ms: current_track.item.duration_ms,
       started_at: current_track.timestamp,
