@@ -64,8 +64,6 @@ export async function RegenerateTokens(): Promise<void> {
   // Get the refresh token for the account
   const refresh_token = SpotifyAccount().refresh;
 
-  console.log(refresh_token);
-
   // Get the access token and refresh tokens from spotify using the refresh token
   const authorization_tokens = await Fetch('https://accounts.spotify.com/api/token', {
     method: 'post',
