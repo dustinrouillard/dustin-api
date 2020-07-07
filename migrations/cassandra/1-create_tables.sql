@@ -32,3 +32,24 @@ CREATE TABLE spotify_song_history
     item_length_ms VARINT,
     PRIMARY KEY (date)
 );
+
+CREATE TABLE twitter_followers
+(
+    user_id BIGINT,
+    username TEXT,
+    name TEXT,
+    verified BOOLEAN,
+    protected BOOLEAN,
+    image TEXT,
+    banner TEXT,
+    color TEXT,
+    location TEXT,
+    description TEXT,
+    url TEXT,
+    followers DOUBLE,
+    following DOUBLE,
+    statuses DOUBLE,
+    likes DOUBLE,
+    PRIMARY KEY
+(user_id)
+);

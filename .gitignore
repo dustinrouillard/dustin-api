@@ -21,3 +21,6 @@ development
 
 # Spotify Configuration (Access/Refresh tokens)
 .spotify
+
+# Twitter Configuration (Access token)
+.twitter

@@ -16,6 +16,13 @@ export const WakatimeConfig = {
   Id: process.env.WAKATIME_ID || '',
 };
 
+export const TwitterConfig = {
+  Username: process.env.TWITTER_USERNAME || '',
+  ApiKey: process.env.TWITTER_API_KEY || '',
+  Secret: process.env.TWITTER_API_SECRET || '',
+  IsConfigured: existsSync('.twitter'),
+};
+
 export const SpotifyConfig = {
   Id: process.env.SPOTIFY_CLIENT_ID || '',
   Secret: process.env.SPOTIFY_CLIENT_SECRET || '',

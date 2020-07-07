@@ -4,8 +4,6 @@ import fastify from 'fastify';
 
 import { PortConfig } from './modules/config';
 
-import 'helpers/spotify';
-
 import 'tasks';
 
 import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
