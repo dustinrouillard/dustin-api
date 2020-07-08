@@ -42,8 +42,9 @@ async function LogSpotifyListenHistory(): Promise<void> {
   );
 }
 
-(async (): Promise<void> => {
+export async function Activate(): Promise<void> {
   Log(`Starting task runner for tracking spotify listen history [${MS} ms]`);
   LogSpotifyListenHistory();
   setInterval(LogSpotifyListenHistory, MS);
-})();
+  return;
+}

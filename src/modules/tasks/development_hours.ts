@@ -29,8 +29,9 @@ async function GetDevelopmentHours(): Promise<void> {
 
 const Job = new CronJob(CRON, GetDevelopmentHours, null, true, 'America/Los_Angeles');
 
-(async (): Promise<void> => {
+export async function Activate(): Promise<void> {
   Log(`Starting task runner for getting development hours [${CRON}]`);
   GetDevelopmentHours();
   Job.start();
-})();
+  return;
+}

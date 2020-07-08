@@ -53,8 +53,9 @@ async function PullTwitterFollowers(): Promise<void> {
 
 const Job = new CronJob(CRON, PullTwitterFollowers, null, true, 'America/Los_Angeles');
 
-(async (): Promise<void> => {
+export async function Activate(): Promise<void> {
   Log(`Starting task runner for pulling twitter followers [${CRON}]`);
   PullTwitterFollowers();
   Job.start();
-})();
+  return;
+}
