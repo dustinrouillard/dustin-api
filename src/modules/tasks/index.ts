@@ -13,5 +13,5 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
     await PullTwitterFollowers();
     await GetDevelopmentHours();
     await UpdateStatisticsGist();
-  }, 1000);
+  }, 500);
 })();
