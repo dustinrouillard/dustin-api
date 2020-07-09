@@ -6,6 +6,7 @@ export const BaseURL = process.env.BASE_URL || 'http://127.0.0.1:1300';
 export const PortConfig = Number(process.env.PORT) || 1300;
 
 export const GithubConfig = {
+  Username: process.env.GITHUB_USERNAME || '',
   Gist: process.env.GITHUB_GIST || '',
   Filename: process.env.GITHUB_FILENAME || 'Statistics',
   Token: process.env.GITHUB_TOKEN || '',
