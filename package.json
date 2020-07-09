@@ -1,8 +1,8 @@
 {
-  "name": "personal-api",
+  "name": "dustin.rest",
   "private": true,
   "version": "1.0.0",
-  "description": "Typescript API Boilerplate for Fastify",
+  "description": "Personal REST API running Fastify for dustin.sh",
   "author": "Dustin Rouillard <code@dustin.sh>",
   "main": "dist/server.js",
   "scripts": {
