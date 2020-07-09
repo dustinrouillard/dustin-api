@@ -1,14 +1,24 @@
 import { CronJob } from 'cron';
 
-import { Fetch } from '@dustinrouillard/fastify-utilities/modules/fetch';
-import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { GetFollowers } from 'helpers/twitter';
-import { TwitterUser } from 'modules/interfaces/ITwitter';
+import { TwitterUser, DatabaseTwitterUser } from 'modules/interfaces/ITwitter';
 import { CassandraClient } from '@dustinrouillard/database/cassandra';
 import { RedisClient } from '@dustinrouillard/database/redis';
 
 const CRON = '*/20 * * * *';
+
+async function GetCurrentFollowers(): Promise<DatabaseTwitterUser[]> {
+  let Followers = (await RedisClient.exists('twitter/followers')) ? JSON.parse((await RedisClient.get('twitter/followers')) || '') : '';
+  if (!Followers)
+    Followers = (
+      await CassandraClient.execute('SELECT id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location FROM twitter_followers')
+    ).rows;
+  if (Followers) await RedisClient.set('twitter/followers', JSON.stringify(Followers), 'ex', 120);
+
+  return Followers;
+}
 
 async function PullTwitterFollowers(): Promise<void> {
   // Check last run time in redis before running this again to make sure it is more than 15 minutes
@@ -17,12 +27,19 @@ async function PullTwitterFollowers(): Promise<void> {
 
   const twitter_followers = await GetFollowers();
 
+  // Get all twitter followers we already have from cassandra or redis
+  // const current_followers = await GetCurrentFollowers();
+
+  // Filter out unfollowers
+  // const unfollowers = current_followers.filter((cF) => !twitter_followers.some((tF) => cF.username == tF.screen_name));
+  // if (unfollowers.length > 0) Debug(`Twitter : We found ${unfollowers.length.toLocaleString()} unfollowers`);
+
   const query = twitter_followers.map((user: TwitterUser) => {
     return {
       query:
-        'INSERT INTO twitter_followers (user_id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       params: [
-        user.id,
+        user.id.toString(),
         user.screen_name,
         user.name,
         user.verified,

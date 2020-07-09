@@ -1,11 +1,12 @@
 import qs from 'querystring';
 
 import { Fetch, RequestOptions } from '@dustinrouillard/fastify-utilities/modules/fetch';
-import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { TwitterConfig } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 import { FollowersListResponse, TwitterUser } from 'modules/interfaces/ITwitter';
+import { RedisClient } from '@dustinrouillard/database/redis';
 
 export function TwitterAccount(): { access: string } {
   if (!TwitterConfig.IsConfigured) throw { code: 'missing_twitter_config' };
@@ -64,11 +65,16 @@ async function CheckRatelimit(): Promise<boolean> {
 
   const { remaining } = ratelimit_status.resources.followers['/followers/list'];
 
+  Debug('Twitter : Remaining ratelimit', remaining);
+
   if (remaining <= 0) return false;
   return true;
 }
 
 export async function GetFollowers(cursor?: number): Promise<TwitterUser[]> {
+  // TODO: Debugging code that I won't remove and will add a toggle to for later
+  // if (await RedisClient.exists('twitter/raw')) return JSON.parse((await RedisClient.get('twitter/raw')) || '');
+
   // Check rate limit for getting followers
   const check_rate_limit = await CheckRatelimit();
   if (!check_rate_limit) throw { code: 'rate_limited' };
@@ -83,6 +89,9 @@ export async function GetFollowers(cursor?: number): Promise<TwitterUser[]> {
   let total_followers = [...followers_count.users];
   // If we have 200 check for cursor and try making the request again
   if (followers_count.users.length >= 200 && followers_count.next_cursor) total_followers = [...total_followers, ...(await GetFollowers(followers_count.next_cursor))];
+
+  // TODO: Debugging code, not removing need later will add toggle
+  // await RedisClient.set('twitter/raw', JSON.stringify(total_followers), 'ex', 900);
 
   return total_followers;
 }

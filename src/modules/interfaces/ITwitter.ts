@@ -25,3 +25,22 @@ export interface FollowersListResponse {
   previous_cursor: number;
   total_count: null;
 }
+
+export interface DatabaseTwitterUser {
+  id: string;
+  user_id: string;
+  username: string;
+  name: string;
+  url: string;
+  verified: boolean;
+  protected: boolean;
+  image: string;
+  banner: string;
+  color: string;
+  description: string;
+  followers: number;
+  following: number;
+  statuses: number;
+  likes: number;
+  location: string;
+}
