@@ -1,4 +1,4 @@
-import { CassandraClient, Types } from '@dustinrouillard/database/cassandra';
+import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 
 export async function IncrementTotalCommandCount(): Promise<boolean> {
   const current_date = new Date();
@@ -99,6 +99,6 @@ export async function FetchStatistics(): Promise<Stats> {
     end,
     development_seconds,
     commands_ran,
-    builds_ran,
+    builds_ran
   };
 }

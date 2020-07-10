@@ -4,8 +4,8 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { GetFollowers } from 'helpers/twitter';
 import { TwitterUser, DatabaseTwitterUser } from 'modules/interfaces/ITwitter';
-import { CassandraClient } from '@dustinrouillard/database/cassandra';
-import { RedisClient } from '@dustinrouillard/database/redis';
+import { CassandraClient } from '@dustinrouillard/database-connectors/cassandra';
+import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 
 const CRON = '*/20 * * * *';
 
@@ -53,8 +53,8 @@ async function PullTwitterFollowers(): Promise<void> {
         user.friends_count,
         user.statuses_count,
         user.favourites_count,
-        user.location,
-      ],
+        user.location
+      ]
     };
   });
 

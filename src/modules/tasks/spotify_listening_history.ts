@@ -1,4 +1,4 @@
-import { CassandraClient, Types } from '@dustinrouillard/database/cassandra';
+import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 
 import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
@@ -37,8 +37,8 @@ async function LogSpotifyListenHistory(): Promise<void> {
       spotify_playing.item_type,
       spotify_playing.item_id,
       spotify_playing.item_image,
-      spotify_playing.item_length_ms,
-    ],
+      spotify_playing.item_length_ms
+    ]
   );
 }
 

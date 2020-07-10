@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 
-import { CassandraClient } from '@dustinrouillard/database/cassandra';
+import { CassandraClient } from '@dustinrouillard/database-connectors/cassandra';
 
 import { Fetch } from '@dustinrouillard/fastify-utilities/modules/fetch';
 import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';

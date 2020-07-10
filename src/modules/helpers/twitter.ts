@@ -6,7 +6,7 @@ import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { TwitterConfig } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 import { FollowersListResponse, TwitterUser } from 'modules/interfaces/ITwitter';
-// import { RedisClient } from '@dustinrouillard/database/redis';
+// import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 
 export function TwitterAccount(): { access: string } {
   if (!TwitterConfig.IsConfigured) throw { code: 'missing_twitter_config' };
@@ -19,9 +19,9 @@ export async function GenerateToken(): Promise<void> {
     method: 'post',
     headers: {
       authorization: `Basic ${Buffer.from(`${TwitterConfig.ApiKey}:${TwitterConfig.Secret}`).toString('base64')}`,
-      'content-type': 'application/x-www-form-urlencoded',
+      'content-type': 'application/x-www-form-urlencoded'
     },
-    body: qs.stringify({ grant_type: 'client_credentials' }),
+    body: qs.stringify({ grant_type: 'client_credentials' })
   });
 
   // Store the access and refresh token in the .spotify file
@@ -59,8 +59,8 @@ async function CheckRatelimit(): Promise<boolean> {
   const ratelimit_status = await RequestWrapper<{ resources: { followers: { [key: string]: { limit: number; remaining: number; reset: number } } } }>(
     'https://api.twitter.com/1.1/application/rate_limit_status.json',
     {
-      headers: { authorization: `Bearer ${TwitterAccount().access}` },
-    },
+      headers: { authorization: `Bearer ${TwitterAccount().access}` }
+    }
   );
 
   const { remaining } = ratelimit_status.resources.followers['/followers/list'];
@@ -82,8 +82,8 @@ export async function GetFollowers(cursor?: number): Promise<TwitterUser[]> {
   const followers_count = await RequestWrapper<FollowersListResponse>(
     `https://api.twitter.com/1.1/followers/list.json?screen_name=${TwitterConfig.Username}&count=200&include_user_entities=false&skip_status=true${cursor ? `&cursor=${cursor.toString()}` : ''}`,
     {
-      headers: { authorization: `Bearer ${TwitterAccount().access}` },
-    },
+      headers: { authorization: `Bearer ${TwitterAccount().access}` }
+    }
   );
 
   let total_followers = [...followers_count.users];
