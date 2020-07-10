@@ -10,7 +10,6 @@ export async function Upload(base64: string, type: UploadType, name?: string): P
   const file_uri = base64.split(';base64,')[1];
 
   // Get buffer and file type
-  // console.log(file_uri);
   const buffer = Buffer.from(file_uri, 'base64');
   const file_type = await typeFromBuffer(buffer);
 
@@ -33,7 +32,7 @@ export async function Upload(base64: string, type: UploadType, name?: string): P
     file: bufferStream,
     path: `${folder}/${file_path}`,
     public: true,
-    type: file_type.mime,
+    type: file_type.mime
   });
 
   // Custom domain responses
