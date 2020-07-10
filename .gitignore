@@ -14,6 +14,9 @@ yarn-error.log
 # Development volumes and stuff
 development
 
+# Google account credentials
+.google.json
+
 # Ignore environment files
 .env.*
 .env

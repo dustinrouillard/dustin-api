@@ -6,7 +6,7 @@ import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { TwitterConfig } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 import { FollowersListResponse, TwitterUser } from 'modules/interfaces/ITwitter';
-import { RedisClient } from '@dustinrouillard/database/redis';
+// import { RedisClient } from '@dustinrouillard/database/redis';
 
 export function TwitterAccount(): { access: string } {
   if (!TwitterConfig.IsConfigured) throw { code: 'missing_twitter_config' };

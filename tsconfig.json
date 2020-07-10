@@ -17,7 +17,8 @@
       "handlers/*": ["modules/handlers/*"],
       "helpers/*": ["modules/helpers/*"],
       "config": ["modules/config"],
-      "tasks": ["modules/tasks"]
+      "tasks": ["modules/tasks"],
+      "utils/*": ["modules/utils/*"]
     }
   },
   "include": ["**/*.ts"]

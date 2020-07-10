@@ -29,3 +29,12 @@ export const SpotifyConfig = {
   Secret: process.env.SPOTIFY_CLIENT_SECRET || '',
   IsConfigured: existsSync('.spotify'),
 };
+
+export const GoogleStorage = {
+  Bucket: process.env.GCS_BUCKET || '',
+  Host: process.env.GCS_MEDIA_HOST || '',
+  ImagesDomain: process.env.GCS_IMAGES_CUSTOM_DOMAIN || '',
+  UploadsDomain: process.env.GCS_UPLOADS_CUSTOM_DOMAIN || '',
+  ImagesFolder: process.env.GCS_IMAGES_FOLDER || '',
+  UploadsFolder: process.env.GCS_UPLOADS_FOLDER || '',
+};

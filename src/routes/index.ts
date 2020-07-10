@@ -6,6 +6,7 @@ import { AuthorizeSpotify, CallbackSpotify } from 'handlers/spotify';
 import { IncrementCommandCount, IncrementBuildCount, GetStatistics } from 'handlers/stats';
 
 import { SpotifyConfig } from 'modules/config';
+import { UploadFileHandler, UploadImageHandler } from 'modules/handlers/upload';
 
 export function UnauthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
   server.get('/stats', GetStatistics);
@@ -20,6 +21,9 @@ export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterO
   server.register(Middleware());
   server.post('/stats/track/commands', IncrementCommandCount);
   server.post('/stats/track/docker', IncrementBuildCount);
+
+  server.post('/upload/image', UploadImageHandler);
+  server.post('/upload/file', UploadFileHandler);
 
   if (next) next();
 }
