@@ -23,7 +23,7 @@ export async function CheckForConfig(): Promise<void> {
 
 export function SpotifyAccount(): { access: string; refresh: string } {
   if (!SpotifyConfig.IsConfigured) throw { code: 'missing_spotify_config' };
-  return JSON.parse(readFileSync('.spotify').toString());
+  return JSON.parse(readFileSync('.config/.spotify').toString());
 }
 
 export function GetSpotifyAuthorization(): string {
@@ -32,7 +32,7 @@ export function GetSpotifyAuthorization(): string {
     response_type: 'code',
     client_id: SpotifyConfig.Id,
     scope: encodeURIComponent('user-read-playback-state user-read-currently-playing'),
-    redirect_uri: `${BaseURL}/spotify/callback`,
+    redirect_uri: `${BaseURL}/spotify/callback`
   });
 
   return `https://accounts.spotify.com/authorize?${query}`;
@@ -44,18 +44,18 @@ export async function SetupSpotify(code: string): Promise<void> {
     method: 'post',
     headers: {
       authorization: `Basic ${Buffer.from(`${SpotifyConfig.Id}:${SpotifyConfig.Secret}`).toString('base64')}`,
-      'content-type': 'application/x-www-form-urlencoded',
+      'content-type': 'application/x-www-form-urlencoded'
     },
     body: qs.stringify({
       code,
       grant_type: 'authorization_code',
-      redirect_uri: `${BaseURL}/spotify/callback`,
-    }),
+      redirect_uri: `${BaseURL}/spotify/callback`
+    })
   });
 
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
-    writeFileSync('.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
+    writeFileSync('.config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
 
   return;
 }
@@ -69,17 +69,17 @@ export async function RegenerateTokens(): Promise<void> {
     method: 'post',
     headers: {
       authorization: `Basic ${Buffer.from(`${SpotifyConfig.Id}:${SpotifyConfig.Secret}`).toString('base64')}`,
-      'content-type': 'application/x-www-form-urlencoded',
+      'content-type': 'application/x-www-form-urlencoded'
     },
     body: qs.stringify({
       refresh_token,
       grant_type: 'refresh_token',
-      redirect_uri: `${BaseURL}/spotify/callback`,
-    }),
+      redirect_uri: `${BaseURL}/spotify/callback`
+    })
   });
 
   // Store the access and refresh token in the .spotify file
-  if (authorization_tokens.access_token) writeFileSync('.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
+  if (authorization_tokens.access_token) writeFileSync('.config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
 
   return;
 }
@@ -100,7 +100,7 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
 export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
   // Get current track data from spotify
   const current_track = await RequestWrapper<PlayerResponse>('https://api.spotify.com/v1/me/player?additional_types=episode', {
-    headers: { authorization: `Bearer ${SpotifyAccount().access}` },
+    headers: { authorization: `Bearer ${SpotifyAccount().access}` }
   });
 
   if (!['track', 'episode'].includes(current_track.currently_playing_type)) return { is_playing: false };
@@ -117,7 +117,7 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
       item_image: current_track.item.show?.images[0].url,
       item_progress: current_track.progress_ms,
       item_length_ms: current_track.item.duration_ms,
-      started_at: current_track.timestamp,
+      started_at: current_track.timestamp
     };
   } else return { is_playing: false };
 }

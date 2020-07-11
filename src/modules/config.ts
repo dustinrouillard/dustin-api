@@ -9,25 +9,25 @@ export const GithubConfig = {
   Username: process.env.GITHUB_USERNAME || '',
   Gist: process.env.GITHUB_GIST || '',
   Filename: process.env.GITHUB_FILENAME || 'Statistics',
-  Token: process.env.GITHUB_TOKEN || '',
+  Token: process.env.GITHUB_TOKEN || ''
 };
 
 export const WakatimeConfig = {
   User: process.env.WAKATIME_USER || '',
-  Id: process.env.WAKATIME_ID || '',
+  Id: process.env.WAKATIME_ID || ''
 };
 
 export const TwitterConfig = {
   Username: process.env.TWITTER_USERNAME || '',
   ApiKey: process.env.TWITTER_API_KEY || '',
   Secret: process.env.TWITTER_API_SECRET || '',
-  IsConfigured: existsSync('.twitter'),
+  IsConfigured: existsSync('.config/.twitter')
 };
 
 export const SpotifyConfig = {
   Id: process.env.SPOTIFY_CLIENT_ID || '',
   Secret: process.env.SPOTIFY_CLIENT_SECRET || '',
-  IsConfigured: existsSync('.spotify'),
+  IsConfigured: existsSync('.config/.spotify')
 };
 
 export const GoogleStorage = {
@@ -36,5 +36,5 @@ export const GoogleStorage = {
   ImagesDomain: process.env.GCS_IMAGES_CUSTOM_DOMAIN || '',
   UploadsDomain: process.env.GCS_UPLOADS_CUSTOM_DOMAIN || '',
   ImagesFolder: process.env.GCS_IMAGES_FOLDER || '',
-  UploadsFolder: process.env.GCS_UPLOADS_FOLDER || '',
+  UploadsFolder: process.env.GCS_UPLOADS_FOLDER || ''
 };

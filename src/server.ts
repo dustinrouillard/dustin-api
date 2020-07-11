@@ -21,4 +21,4 @@ server.register(AuthenticatedRoutes);
 server.register(UnauthenticatedRoutes);
 server.register(Missing);
 
-server.listen(PortConfig, () => Log(`Server ready on ${PortConfig}`));
+server.listen(PortConfig, '0.0.0.0', () => Log(`Server ready on ${PortConfig}`));
