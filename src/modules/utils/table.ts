@@ -8,8 +8,8 @@ export function SpaceOut(leading: string, content: string): string {
   return `${leading} ${' '.repeat(TABLE_SIZE - leading.length - content.length - 2)} ${content}`;
 }
 
-export function TitleSpace(content: string): string {
-  return `${content}${' '.repeat(MAX_TITLE_SIZE - content.length)}`;
+export function TitleSpace(content: string, max?: number): string {
+  return `${content}${' '.repeat((max || MAX_TITLE_SIZE) - content.length)}`;
 }
 
 export function SpaceByMax(text: string, seperator: boolean, items: string[], bold = false): string {
@@ -87,5 +87,23 @@ export function GenerateGithubTable(dayStats: Stats, weekStats: Stats, monthStat
     monthlyStats,
     true
   )} |`;
+  return table;
+}
+
+export function GenerateInformationTable({ music_playing, sleeping }: { music_playing: boolean; sleeping: boolean }): string {
+  const music_status = `:musical_note: Music Playing : ${music_playing ? '**Yes**' : '**No**'}`;
+  const sleeping_status = `:bed: Sleeping : ${sleeping ? '**Yes**' : '**No**'}`;
+
+  const items = [music_status, sleeping_status];
+
+  const highest = items.reduce((a, b) => {
+    return a.length > b.length ? a : b;
+  });
+
+  let table = `| ${TitleSpace('Information', highest.length)} |`;
+  table += `\n| ${SpaceByMax('-', true, items)}: |`;
+  table += `\n| ${SpaceByMax(music_status, false, items)} |`;
+  table += `\n| ${SpaceByMax(sleeping_status, false, items)} |`;
+
   return table;
 }

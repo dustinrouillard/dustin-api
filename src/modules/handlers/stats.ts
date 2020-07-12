@@ -4,6 +4,8 @@ import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/respo
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { IncrementTotalCommandCount, FetchStatistics, IncrementTotalBuildCount, FetchMonthlyStatistics, FetchDailyStatistics } from 'helpers/stats';
+import { GetCurrentPlaying } from 'modules/helpers/spotify';
+import { GetSleepingState } from 'modules/helpers/state';
 
 export async function IncrementCommandCount(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
   try {
@@ -33,7 +35,25 @@ export async function GetStatistics(req: FastifyRequest<{}, {}, {}, {}, {}>, rep
     const daily = await FetchDailyStatistics();
     const weekly = await FetchStatistics();
 
-    return Success(reply, 200, { daily, weekly, monthly });
+    const spotify = await GetCurrentPlaying();
+
+    const music_playing = spotify.is_playing;
+    delete spotify.is_playing;
+
+    const sleeping = await GetSleepingState();
+
+    return Success(reply, 200, {
+      statistics: {
+        daily,
+        weekly,
+        monthly
+      },
+      state: {
+        music_playing,
+        sleeping
+      },
+      spotify
+    });
   } catch (error) {
     Debug(error);
     return Catch(reply, error);

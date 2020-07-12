@@ -4,6 +4,7 @@ import { Middleware } from '@dustinrouillard/fastify-security';
 
 import { AuthorizeSpotify, CallbackSpotify } from 'handlers/spotify';
 import { IncrementCommandCount, IncrementBuildCount, GetStatistics } from 'handlers/stats';
+import { SetSleepingStatus } from 'handlers/state';
 
 import { SpotifyConfig } from 'modules/config';
 import { UploadFileHandler, UploadImageHandler } from 'modules/handlers/upload';
@@ -21,6 +22,7 @@ export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterO
   server.register(Middleware());
   server.post('/stats/track/commands', IncrementCommandCount);
   server.post('/stats/track/docker', IncrementBuildCount);
+  server.post('/state/sleeping', SetSleepingStatus);
 
   server.post('/upload/image', UploadImageHandler);
   server.post('/upload/file', UploadFileHandler);

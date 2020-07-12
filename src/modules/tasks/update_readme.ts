@@ -6,11 +6,13 @@ import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { FetchStatistics, FetchDailyStatistics, FetchMonthlyStatistics } from 'helpers/stats';
 import { FormatSeconds } from 'modules/utils/time';
 import { GithubConfig } from 'modules/config';
-import { GenerateGithubTable } from 'modules/utils/table';
+import { GenerateGithubTable, GenerateInformationTable } from 'modules/utils/table';
+import { GetCurrentPlaying } from 'modules/helpers/spotify';
+import { GetSleepingState } from 'modules/helpers/state';
 
-const CRON = '*/5 * * * *';
+const CRON = '*/3 * * * *';
 
-async function UpdateGitHubReadme(): Promise<void> {
+export async function UpdateGitHubReadme(): Promise<void> {
   // Map out variables
   const daily_db_stats = await FetchDailyStatistics();
   const weekly_db_stats = await FetchStatistics();
@@ -34,8 +36,16 @@ async function UpdateGitHubReadme(): Promise<void> {
     builds: monthly_db_stats.builds_ran.toLocaleString()
   };
 
+  // Get current sleeping status
+  const sleeping = await GetSleepingState();
+
+  // Get current spotify playing status
+  const spotify_playing = await GetCurrentPlaying();
+
   // Generate the fancy table
   const stats_table = GenerateGithubTable(daily_stats, weekly_stats, monthly_stats);
+
+  const information_table = GenerateInformationTable({ music_playing: spotify_playing.is_playing, sleeping });
 
   let change = true;
 
@@ -46,25 +56,38 @@ async function UpdateGitHubReadme(): Promise<void> {
       headers: { authorization: `Bearer ${GithubConfig.Token}` }
     });
 
+    // Decode the old readme
     const github_readme = Buffer.from(readme_md.content, 'base64').toString();
 
-    const old_table_p1 = '| Title' + github_readme.split('| Title')[1];
-    if (!old_table_p1) change = true;
-    const old_table_p2 = old_table_p1.split('\n\n######')[0];
-    if (!old_table_p2) change = true;
+    // Find the old stats table
+    const stats_table_check = '| Title' + github_readme.split('| Title')[1];
+    if (!stats_table_check) change = true;
+    const old_stats_table = stats_table_check.split('\n\n######')[0];
+    if (!old_stats_table) change = true;
 
-    if (old_table_p2 == stats_table) change = false;
+    // Find the old information table
+    const information_table_check = '| Information' + github_readme.split('| Information')[1];
+    if (!information_table_check) change = true;
+    const old_information_table = information_table_check.split('\n\n######')[0];
+    if (!old_information_table) change = true;
+
+    /// If the stats table is the same as the current change don't make the change
+    if (old_stats_table == stats_table) change = false;
+    if (old_information_table == information_table) change = false;
 
     // Ignore the change if the contents is the same
     if (!change) return;
+
+    let new_readme = github_readme.replace(old_stats_table, stats_table);
+    new_readme = github_readme.replace(old_information_table, information_table);
 
     // Update the contents of the gist
     await Fetch(`https://api.github.com/repos/${GithubConfig.Username}/${GithubConfig.Username}/contents/README.md`, {
       method: 'put',
       headers: { authorization: `Bearer ${GithubConfig.Token}` },
       json: {
-        message: 'Updating 7-day statistics',
-        content: Buffer.from(github_readme.replace(old_table_p2, stats_table), 'utf8').toString('base64'),
+        message: 'Updating recent statistics',
+        content: Buffer.from(new_readme, 'utf8').toString('base64'),
         sha: readme_md.sha,
         author: {
           name: 'dustin.rest - API Automation',
