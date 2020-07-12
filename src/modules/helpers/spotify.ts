@@ -6,7 +6,9 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { SpotifyConfig, BaseURL } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 
-import { PlayerResponse, InternalPlayerResponse } from 'modules/interfaces/ISpotify';
+import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory } from 'modules/interfaces/ISpotify';
+import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
+import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 
 export async function CheckForConfig(): Promise<void> {
   // Make sure we have a client id and secret
@@ -120,6 +122,32 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
       started_at: current_track.timestamp
     };
   } else return { is_playing: false };
+}
+
+export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<Types.Row[]> {
+  // Check if a value exists in redis for the supplied range and use that instead
+  if (await RedisClient.exists(`spotify/history/${range || 'day'}`)) return JSON.parse((await RedisClient.get(`spotify/history/${range || 'day'}`)) || '');
+
+  let startDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  if (range == 'week') startDate = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
+  else if (range == 'month') startDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
+
+  // Get end date (right now)
+  const endDate = new Date();
+
+  // Get entries from cassandra between the selected date range
+  const tracks_history = await CassandraClient.execute(
+    'SELECT item_name, item_author, item_type, device_name, device_type, date FROM spotify_song_history WHERE date >= ? AND date <= ? ALLOW FILTERING;',
+    [startDate, endDate]
+  );
+
+  // Make sure there were rows returned
+  if (tracks_history.rowLength <= 0) throw { code: 'no_tracks_in_that_range' };
+
+  // Store in redis for 5 minutes
+  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify(tracks_history.rows), 'ex', 300);
+
+  return tracks_history.rows;
 }
 
 // Run the check for config function on start to load up the spotify details.

@@ -3,7 +3,7 @@ import { FastifyInstance, RegisterOptions } from 'fastify';
 import { Middleware } from '@dustinrouillard/fastify-security';
 
 import { GetRoutes } from 'handlers/base';
-import { AuthorizeSpotify, CallbackSpotify, CurrentPlaying } from 'handlers/spotify';
+import { AuthorizeSpotify, CallbackSpotify, CurrentPlaying, GetSpotifyHistory } from 'handlers/spotify';
 import { IncrementCommandCount, IncrementBuildCount, GetStatistics } from 'handlers/stats';
 import { UploadFileHandler, UploadImageHandler } from 'handlers/upload';
 import { SetSleepingStatus, GetCurrentState } from 'handlers/state';
@@ -19,6 +19,7 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
 
   // Spotify related routes
   server.get('/spotify', CurrentPlaying);
+  server.get('/spotify/history', GetSpotifyHistory);
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/authorize', AuthorizeSpotify);
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/callback', CallbackSpotify);
 

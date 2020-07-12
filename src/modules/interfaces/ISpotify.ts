@@ -1,3 +1,5 @@
+import { Types } from '@dustinrouillard/database-connectors/cassandra';
+
 export interface PlayerResponse {
   device: Device;
   shuffle_state: boolean;

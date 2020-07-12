@@ -3,7 +3,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/response';
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
-import { SetupSpotify, GetSpotifyAuthorization, GetCurrentPlaying } from 'helpers/spotify';
+import { SetupSpotify, GetSpotifyAuthorization, GetCurrentPlaying, PlayingHistory } from 'helpers/spotify';
 
 export async function AuthorizeSpotify(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
   try {
@@ -30,6 +30,17 @@ export async function CurrentPlaying(req: FastifyRequest<{}, {}, {}, {}, {}>, re
     const playing = await GetCurrentPlaying();
 
     return Success(reply, 200, playing);
+  } catch (error) {
+    Debug(error);
+    return Catch(reply, error);
+  }
+}
+
+export async function GetSpotifyHistory(req: FastifyRequest<{}, { range: 'day' | 'week' | 'month' }, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+  try {
+    const history = await PlayingHistory(req.query.range);
+
+    return Success(reply, 200, history);
   } catch (error) {
     Debug(error);
     return Catch(reply, error);
