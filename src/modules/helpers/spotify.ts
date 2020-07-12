@@ -124,7 +124,7 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
   } else return { is_playing: false };
 }
 
-export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<Types.Row[]> {
+export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<{ history: Types.Row[]; cached?: string }> {
   // Check if a value exists in redis for the supplied range and use that instead
   if (await RedisClient.exists(`spotify/history/${range || 'day'}`)) return JSON.parse((await RedisClient.get(`spotify/history/${range || 'day'}`)) || '');
 
@@ -148,9 +148,9 @@ export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<T
   const sorted = tracks_history.rows.sort((a, b) => b.date - a.date);
 
   // Store in redis for 5 minutes
-  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify(sorted), 'ex', 300);
+  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify({ cached: new Date().toUTCString(), history: sorted }), 'ex', 300);
 
-  return sorted;
+  return { history: sorted };
 }
 
 // Run the check for config function on start to load up the spotify details.
