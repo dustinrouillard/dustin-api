@@ -144,10 +144,13 @@ export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<T
   // Make sure there were rows returned
   if (tracks_history.rowLength <= 0) throw { code: 'no_tracks_in_that_range' };
 
-  // Store in redis for 5 minutes
-  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify(tracks_history.rows), 'ex', 300);
+  // Sort the tracks
+  const sorted = tracks_history.rows.sort((a, b) => b.date - a.date);
 
-  return tracks_history.rows;
+  // Store in redis for 5 minutes
+  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify(sorted), 'ex', 300);
+
+  return sorted;
 }
 
 // Run the check for config function on start to load up the spotify details.

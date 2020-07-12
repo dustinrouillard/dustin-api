@@ -10,6 +10,7 @@ export async function GetRoutes(req: FastifyRequest<{}, {}, {}, {}, { sleeping: 
       fqdn: req.hostname,
       routes: {
         spotify_data: `${BaseURL}/spotify`,
+        spotify_history: `${BaseURL}/spotify/history`,
         state_data: `${BaseURL}/state`,
         stats_data: `${BaseURL}/stats`
       }
