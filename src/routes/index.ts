@@ -2,16 +2,23 @@ import { FastifyInstance, RegisterOptions } from 'fastify';
 
 import { Middleware } from '@dustinrouillard/fastify-security';
 
-import { AuthorizeSpotify, CallbackSpotify } from 'handlers/spotify';
+import { GetRoutes } from 'handlers/base';
+import { AuthorizeSpotify, CallbackSpotify, CurrentPlaying } from 'handlers/spotify';
 import { IncrementCommandCount, IncrementBuildCount, GetStatistics } from 'handlers/stats';
-import { SetSleepingStatus } from 'handlers/state';
+import { UploadFileHandler, UploadImageHandler } from 'handlers/upload';
+import { SetSleepingStatus, GetCurrentState } from 'handlers/state';
+import { RunTask } from 'handlers/tasks';
 
 import { SpotifyConfig } from 'modules/config';
-import { UploadFileHandler, UploadImageHandler } from 'modules/handlers/upload';
 
 export function UnauthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
+  // Base routes
+  server.get('/', GetRoutes);
   server.get('/stats', GetStatistics);
+  server.get('/state', GetCurrentState);
 
+  // Spotify related routes
+  server.get('/spotify', CurrentPlaying);
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/authorize', AuthorizeSpotify);
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/callback', CallbackSpotify);
 
@@ -20,12 +27,23 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
 
 export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
   server.register(Middleware());
+  // Stats routes
   server.post('/stats/track/commands', IncrementCommandCount);
   server.post('/stats/track/docker', IncrementBuildCount);
+
+  // State routes
   server.post('/state/sleeping', SetSleepingStatus);
 
+  // Uplaoder routes
   server.post('/upload/image', UploadImageHandler);
   server.post('/upload/file', UploadFileHandler);
+
+  if (next) next();
+}
+
+export function TaskRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
+  server.register(Middleware());
+  server.post('/tasks/:task_name', RunTask);
 
   if (next) next();
 }

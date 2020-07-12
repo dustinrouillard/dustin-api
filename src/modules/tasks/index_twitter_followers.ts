@@ -20,7 +20,7 @@ async function GetCurrentFollowers(): Promise<DatabaseTwitterUser[]> {
   return Followers;
 }
 
-async function PullTwitterFollowers(): Promise<void> {
+export async function PullTwitterFollowers(): Promise<void> {
   // Check last run time in redis before running this again to make sure it is more than 15 minutes
   const last_run = await RedisClient.get('tasks/twitter_followers/last_run');
   if (last_run) return;

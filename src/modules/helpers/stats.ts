@@ -1,5 +1,4 @@
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
-import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 export async function IncrementTotalCommandCount(): Promise<boolean> {
   const current_date = new Date();

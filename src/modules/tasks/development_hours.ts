@@ -13,7 +13,7 @@ interface SecondsAndDate {
 
 const CRON = '*/5 * * * *';
 
-async function GetDevelopmentHours(): Promise<void> {
+export async function GetDevelopmentHours(): Promise<void> {
   // Pull statistics from wakatime user
   const stats = await Fetch(`https://wakatime.com/share/@${WakatimeConfig.User}/${WakatimeConfig.Id}.json`);
   const mapped_data = stats.data.map((item: { grand_total: { total_seconds: number }; range: { start: string } }) => {

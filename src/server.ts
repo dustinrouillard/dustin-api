@@ -9,7 +9,7 @@ import 'tasks';
 import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { Logger, Missing } from '@dustinrouillard/fastify-utilities/modules/request';
 
-import { AuthenticatedRoutes, UnauthenticatedRoutes } from './routes';
+import { AuthenticatedRoutes, UnauthenticatedRoutes, TaskRoutes } from './routes';
 
 const server = fastify();
 
@@ -19,6 +19,7 @@ server.register(Logger);
 // Routes
 server.register(AuthenticatedRoutes);
 server.register(UnauthenticatedRoutes);
+server.register(TaskRoutes);
 server.register(Missing);
 
 server.listen(PortConfig, '0.0.0.0', () => Log(`Server ready on ${PortConfig}`));

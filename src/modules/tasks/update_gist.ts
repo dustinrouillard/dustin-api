@@ -10,7 +10,7 @@ import { GenerateTable } from 'modules/utils/table';
 
 const CRON = '*/5 * * * *';
 
-async function UpdateStatisticsGist(): Promise<void> {
+export async function UpdateStatisticsGist(): Promise<void> {
   // Map out variables
   const stats = await FetchStatistics();
   const development_hours = FormatSeconds(stats.development_seconds);
@@ -35,7 +35,7 @@ async function UpdateStatisticsGist(): Promise<void> {
     await Fetch(`https://api.github.com/gists/${GithubConfig.Gist}`, {
       method: 'patch',
       headers: { authorization: `Bearer ${GithubConfig.Token}` },
-      json: { description: `Last 7 days statistics - ${new Date().toLocaleDateString()}`, files },
+      json: { description: `Last 7 days statistics - ${new Date().toLocaleDateString()}`, files }
     });
   } catch (error) {
     Debug('Error with updating statistics', error);

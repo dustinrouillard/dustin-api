@@ -7,7 +7,7 @@ import { DatabaseSpotifyHistory } from 'modules/interfaces/ISpotify';
 
 const MS = 10000;
 
-async function LogSpotifyListenHistory(): Promise<void> {
+export async function LogSpotifyListenHistory(): Promise<void> {
   // Pull spotify now playing data
   const spotify_playing = await GetCurrentPlaying();
 
