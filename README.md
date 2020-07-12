@@ -14,7 +14,7 @@ Right now this api does only useful things to me, well.. Maybe somewhat useful t
 - Auto updating github profile [**README**](https://github.com/dustinrouillard)
 - Auto updating github [**gist**](https://dstn.to/stats-gist)
 - Twitter follower history tracking
-- Spotify listening history
+- Spotify listening history [[**/spotify/history**](https://dustin.rest/spotify/history)]
 - Wakatime development time
 
 ## Tech used
