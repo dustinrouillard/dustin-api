@@ -3,7 +3,7 @@ import { CronJob } from 'cron';
 import { Fetch } from '@dustinrouillard/fastify-utilities/modules/fetch';
 import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
-import { FetchStatistics } from 'helpers/stats';
+import { FetchStatistics, FetchDailyStatistics } from 'helpers/stats';
 import { FormatSeconds } from 'modules/utils/time';
 import { GithubConfig } from 'modules/config';
 import { GenerateGithubTable } from 'modules/utils/table';
@@ -12,13 +12,23 @@ const CRON = '*/5 * * * *';
 
 async function UpdateGitHubReadme(): Promise<void> {
   // Map out variables
-  const stats = await FetchStatistics();
-  const development_hours = FormatSeconds(stats.development_seconds);
-  const total_commands = stats.commands_ran.toLocaleString();
-  const total_builds = stats.builds_ran.toLocaleString();
+  const weekly_db_stats = await FetchStatistics();
+  const daily_db_stats = await FetchDailyStatistics();
+
+  const weekly_stats = {
+    hours: FormatSeconds(weekly_db_stats.development_seconds),
+    commands: weekly_db_stats.commands_ran.toLocaleString(),
+    builds: weekly_db_stats.builds_ran.toLocaleString()
+  };
+
+  const daily_stats = {
+    hours: FormatSeconds(daily_db_stats.development_seconds),
+    commands: daily_db_stats.commands_ran.toLocaleString(),
+    builds: daily_db_stats.builds_ran.toLocaleString()
+  };
 
   // Generate the fancy table
-  const stats_table = GenerateGithubTable(development_hours, total_commands, total_builds);
+  const stats_table = GenerateGithubTable(daily_stats, weekly_stats);
 
   let change = true;
 
@@ -26,7 +36,7 @@ async function UpdateGitHubReadme(): Promise<void> {
     // Fetch the current gist contents
     const readme_md = await Fetch(`https://api.github.com/repos/${GithubConfig.Username}/${GithubConfig.Username}/readme`, {
       method: 'get',
-      headers: { authorization: `Bearer ${GithubConfig.Token}` },
+      headers: { authorization: `Bearer ${GithubConfig.Token}` }
     });
 
     const github_readme = Buffer.from(readme_md.content, 'base64').toString();
@@ -51,9 +61,9 @@ async function UpdateGitHubReadme(): Promise<void> {
         sha: readme_md.sha,
         author: {
           name: 'dustin.rest - API Automation',
-          email: 'code@dustin.sh',
-        },
-      },
+          email: 'code@dustin.sh'
+        }
+      }
     });
   } catch (error) {
     Debug('Error with updating statistics', error);

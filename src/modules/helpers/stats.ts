@@ -1,9 +1,11 @@
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
+import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 export async function IncrementTotalCommandCount(): Promise<boolean> {
   const current_date = new Date();
-  current_date.setUTCHours(0, 0, 0, 0);
+  current_date.setUTCMinutes(0, 0, 0);
 
+  // Get last entry
   const current_commands = await CassandraClient.execute('SELECT commands FROM daily_commands_run WHERE date = ? ALLOW FILTERING;', [current_date]);
 
   let new_commands = 1;
@@ -17,8 +19,9 @@ export async function IncrementTotalCommandCount(): Promise<boolean> {
 
 export async function IncrementTotalBuildCount(): Promise<boolean> {
   const current_date = new Date();
-  current_date.setUTCHours(0, 0, 0, 0);
+  current_date.setUTCMinutes(0, 0, 0);
 
+  // Get last entry
   const current_builds = await CassandraClient.execute('SELECT builds FROM daily_docker_builds WHERE date = ? ALLOW FILTERING;', [current_date]);
 
   let new_builds = 1;
@@ -44,7 +47,7 @@ async function GetDevelopmentHours(start: Date, end: Date): Promise<number> {
   const DailyDevelopmentHoursStats = await CassandraClient.execute('SELECT * FROM daily_development_hours WHERE date >= ? AND date <= ? ALLOW FILTERING;', [start, end]);
 
   const weekly_development = DailyDevelopmentHoursStats.rows.sort((a: Types.Row, b: Types.Row) => b.date - a.date);
-  if (weekly_development.length <= 0) throw { code: 'no_entries_found' };
+  if (weekly_development.length <= 0) return 0;
 
   const reduced = weekly_development.reduce((a: Types.Row, b: Types.Row) => {
     return { ...a, seconds: a.seconds + b.seconds };
@@ -57,7 +60,7 @@ async function GetCommandsRan(start: Date, end: Date): Promise<number> {
   const current_commands = await CassandraClient.execute('SELECT date, commands FROM daily_commands_run WHERE date >= ? AND date <= ? ALLOW FILTERING;', [start, end]);
 
   const weekly_commands = current_commands.rows.sort((a: Types.Row, b: Types.Row) => b.date - a.date);
-  if (weekly_commands.length <= 0) throw { code: 'no_entries_found' };
+  if (weekly_commands.length <= 0) return 0;
 
   const reduced = weekly_commands.reduce((a: Types.Row, b: Types.Row) => {
     return { ...a, commands: Number(a.commands) + Number(b.commands) };
@@ -70,7 +73,7 @@ async function GetBuildsRan(start: Date, end: Date): Promise<number> {
   const current_builds = await CassandraClient.execute('SELECT date, builds FROM daily_docker_builds WHERE date >= ? AND date <= ? ALLOW FILTERING;', [start, end]);
 
   const weekly_builds = current_builds.rows.sort((a: Types.Row, b: Types.Row) => b.date - a.date);
-  if (weekly_builds.length <= 0) throw { code: 'no_entries_found' };
+  if (weekly_builds.length <= 0) return 0;
 
   const reduced = weekly_builds.reduce((a: Types.Row, b: Types.Row) => {
     return { ...a, builds: Number(a.builds) + Number(b.builds) };
@@ -80,10 +83,30 @@ async function GetBuildsRan(start: Date, end: Date): Promise<number> {
 }
 
 export async function FetchStatistics(): Promise<Stats> {
-  const start = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const start = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
   const end = new Date();
-  start.setUTCHours(0, 0, 0, 0);
-  end.setUTCHours(0, 0, 0, 0);
+
+  // Get development time over the range
+  const development_seconds = await GetDevelopmentHours(start, end);
+
+  // Get commands ran over the range
+  const commands_ran = await GetCommandsRan(start, end);
+
+  // Get development time over the range
+  const builds_ran = await GetBuildsRan(start, end);
+
+  return {
+    start,
+    end,
+    development_seconds,
+    commands_ran,
+    builds_ran
+  };
+}
+
+export async function FetchDailyStatistics(): Promise<Stats> {
+  const start = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+  const end = new Date();
 
   // Get development time over the range
   const development_seconds = await GetDevelopmentHours(start, end);
