@@ -11,7 +11,6 @@ Right now this api does only useful things to me, well.. Maybe somewhat useful t
 - Spotify Current Playing [[**/spotify**](https://dustin.rest/spotify)]
 - Current State (Sleeping, music playing, ect) [[**/state**](https://dustin.rest/state)]
 - Current Stats (Hours writing code, commands run, docker builds, ect) [[**/stats**](https://dustin.rest/stats)]
-
 - Auto updating github profile [**README**](https://github.com/dustinrouillard)
 - Auto updating github [**gist**](https://dstn.to/stats-gist)
 - Twitter follower history tracking
