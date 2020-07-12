@@ -8,7 +8,8 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 (async (): Promise<void> => {
   setTimeout(async () => {
-    Log('Starting task runners');
+    if (process.env.NODE_ENV == 'development') return Log('Ignoring task runners as we are in development');
+    else Log('Starting task runners');
 
     await LogSpotifyListenHistory();
     await PullTwitterFollowers();

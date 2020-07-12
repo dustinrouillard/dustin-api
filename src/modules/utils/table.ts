@@ -20,7 +20,7 @@ export function SpaceByMax(text: string, seperator: boolean, items: string[], bo
 
   const repeat = seperator ? spaces - text.length - 1 : spaces - text.length;
 
-  return `${(seperator ? text : ' ').repeat(repeat >= 1 ? repeat : 1)}${bold ? '**' : ''}${text}${bold ? '**' : ''}`;
+  return `${(seperator ? text : ' ').repeat(repeat >= 1 ? repeat : 0)}${text}`;
 }
 
 export function GenerateTable(hours: string, commands: string, builds: string): string {
@@ -36,13 +36,20 @@ export function GenerateGithubTable(dayStats: { hours: string; commands: string;
   const { hours: dayHours, commands: dayCommands, builds: dayBuilds } = dayStats;
   const { hours, commands, builds } = weekStats;
 
-  const stats = [hours, commands, builds];
-  const dailyStats = [dayHours, dayCommands, dayBuilds];
+  const dailyHoursDisplay = `**${dayHours}**`;
+  const dailyCommandsDisplay = `**${dayCommands}**`;
+  const dailyBuildsDisplay = `**${dayBuilds}**`;
+  const weeklyHoursDisplay = `**${hours}**`;
+  const weeklyCommandsDisplay = `**${commands}**`;
+  const weeklyBuildsDisplay = `**${builds}**`;
+
+  const stats = [weeklyHoursDisplay, weeklyCommandsDisplay, weeklyBuildsDisplay];
+  const dailyStats = [dailyHoursDisplay, dailyCommandsDisplay, dailyBuildsDisplay];
 
   let table = `| Title                                       | ${SpaceByMax('24-hours', false, dailyStats)} | ${SpaceByMax('7-days', false, stats)} |`;
   table += `\n| :------------------------------------------ | ${SpaceByMax('-', true, dailyStats)}: | ${SpaceByMax('-', true, stats)}: |`;
-  table += `\n| ${TitleSpace(':hourglass_flowing_sand: Hours Spent Coding')} | ${SpaceByMax(dayHours, false, dailyStats, true)} | ${SpaceByMax(hours, false, stats, true)} |`;
-  table += `\n| ${TitleSpace(':computer: Commands')} | ${SpaceByMax(dayCommands, false, dailyStats, true)} | ${SpaceByMax(commands, false, stats, true)} |`;
-  table += `\n| ${TitleSpace(':hammer: Docker Builds')} | ${SpaceByMax(dayBuilds, false, dailyStats, true)} | ${SpaceByMax(builds, false, stats, true)} |`;
+  table += `\n| ${TitleSpace(':hourglass_flowing_sand: Hours Spent Coding')} | ${SpaceByMax(dailyHoursDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyHoursDisplay, false, stats, true)} |`;
+  table += `\n| ${TitleSpace(':computer: Commands')} | ${SpaceByMax(dailyCommandsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyCommandsDisplay, false, stats, true)} |`;
+  table += `\n| ${TitleSpace(':hammer: Docker Builds')} | ${SpaceByMax(dailyBuildsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyBuildsDisplay, false, stats, true)} |`;
   return table;
 }
