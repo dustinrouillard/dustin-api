@@ -104,6 +104,28 @@ export async function FetchStatistics(): Promise<Stats> {
   };
 }
 
+export async function FetchMonthlyStatistics(): Promise<Stats> {
+  const start = new Date(new Date().setMonth(new Date().getMonth() - 1));
+  const end = new Date();
+
+  // Get development time over the range
+  const development_seconds = await GetDevelopmentHours(start, end);
+
+  // Get commands ran over the range
+  const commands_ran = await GetCommandsRan(start, end);
+
+  // Get development time over the range
+  const builds_ran = await GetBuildsRan(start, end);
+
+  return {
+    start,
+    end,
+    development_seconds,
+    commands_ran,
+    builds_ran
+  };
+}
+
 export async function FetchDailyStatistics(): Promise<Stats> {
   const start = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
   const end = new Date();

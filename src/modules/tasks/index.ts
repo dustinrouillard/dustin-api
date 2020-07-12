@@ -16,5 +16,5 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
     await GetDevelopmentHours();
     await UpdateStatisticsGist();
     await UpdateGitHubReadme();
-  }, 500);
+  }, 1000);
 })();

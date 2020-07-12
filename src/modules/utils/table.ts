@@ -32,24 +32,60 @@ export function GenerateTable(hours: string, commands: string, builds: string): 
   return table;
 }
 
-export function GenerateGithubTable(dayStats: { hours: string; commands: string; builds: string }, weekStats: { hours: string; commands: string; builds: string }): string {
+interface Stats {
+  hours: string;
+  commands: string;
+  builds: string;
+}
+
+export function GenerateGithubTable(dayStats: Stats, weekStats: Stats, monthStats: Stats): string {
   const { hours: dayHours, commands: dayCommands, builds: dayBuilds } = dayStats;
-  const { hours, commands, builds } = weekStats;
+  const { hours: weekHours, commands: weekCommands, builds: weekBuilds } = weekStats;
+  const { hours: monthHours, commands: monthCommands, builds: monthBuilds } = monthStats;
 
   const dailyHoursDisplay = `**${dayHours}**`;
   const dailyCommandsDisplay = `**${dayCommands}**`;
   const dailyBuildsDisplay = `**${dayBuilds}**`;
-  const weeklyHoursDisplay = `**${hours}**`;
-  const weeklyCommandsDisplay = `**${commands}**`;
-  const weeklyBuildsDisplay = `**${builds}**`;
 
-  const stats = [weeklyHoursDisplay, weeklyCommandsDisplay, weeklyBuildsDisplay];
+  const weeklyHoursDisplay = `**${weekHours}**`;
+  const weeklyCommandsDisplay = `**${weekCommands}**`;
+  const weeklyBuildsDisplay = `**${weekBuilds}**`;
+
+  const monthlyHoursDisplay = `**${monthHours}**`;
+  const monthlyCommandsDisplay = `**${monthCommands}**`;
+  const monthlyBuildsDisplay = `**${monthBuilds}**`;
+
   const dailyStats = [dailyHoursDisplay, dailyCommandsDisplay, dailyBuildsDisplay];
+  const weeklyStats = [weeklyHoursDisplay, weeklyCommandsDisplay, weeklyBuildsDisplay];
+  const monthlyStats = [monthlyHoursDisplay, monthlyCommandsDisplay, monthlyBuildsDisplay];
 
-  let table = `| Title                                       | ${SpaceByMax('24-hours', false, dailyStats)} | ${SpaceByMax('7-days', false, stats)} |`;
-  table += `\n| :------------------------------------------ | ${SpaceByMax('-', true, dailyStats)}: | ${SpaceByMax('-', true, stats)}: |`;
-  table += `\n| ${TitleSpace(':hourglass_flowing_sand: Hours Spent Coding')} | ${SpaceByMax(dailyHoursDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyHoursDisplay, false, stats, true)} |`;
-  table += `\n| ${TitleSpace(':computer: Commands')} | ${SpaceByMax(dailyCommandsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyCommandsDisplay, false, stats, true)} |`;
-  table += `\n| ${TitleSpace(':hammer: Docker Builds')} | ${SpaceByMax(dailyBuildsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyBuildsDisplay, false, stats, true)} |`;
+  // TODO: Will make this look better next time I get around to it.
+  let table = `| Title                                       | ${SpaceByMax('24-hours', false, dailyStats)} | ${SpaceByMax('7-days', false, weeklyStats)} | ${SpaceByMax(
+    'Month',
+    false,
+    monthlyStats
+  )} |`;
+  table += `\n| :------------------------------------------ | ${SpaceByMax('-', true, dailyStats)}: | ${SpaceByMax('-', true, weeklyStats)}: | ${SpaceByMax('-', true, monthlyStats)}: |`;
+
+  table += `\n| ${TitleSpace(':hourglass_flowing_sand: Hours Spent Coding')} | ${SpaceByMax(dailyHoursDisplay, false, dailyStats, true)} | ${SpaceByMax(
+    weeklyHoursDisplay,
+    false,
+    weeklyStats,
+    true
+  )} | ${SpaceByMax(monthlyHoursDisplay, false, monthlyStats, true)} |`;
+
+  table += `\n| ${TitleSpace(':computer: Commands')} | ${SpaceByMax(dailyCommandsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyCommandsDisplay, false, weeklyStats, true)} | ${SpaceByMax(
+    monthlyCommandsDisplay,
+    false,
+    monthlyStats,
+    true
+  )} |`;
+
+  table += `\n| ${TitleSpace(':hammer: Docker Builds')} | ${SpaceByMax(dailyBuildsDisplay, false, dailyStats, true)} | ${SpaceByMax(weeklyBuildsDisplay, false, weeklyStats, true)} | ${SpaceByMax(
+    monthlyBuildsDisplay,
+    false,
+    monthlyStats,
+    true
+  )} |`;
   return table;
 }

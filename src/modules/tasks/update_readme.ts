@@ -3,7 +3,7 @@ import { CronJob } from 'cron';
 import { Fetch } from '@dustinrouillard/fastify-utilities/modules/fetch';
 import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
-import { FetchStatistics, FetchDailyStatistics } from 'helpers/stats';
+import { FetchStatistics, FetchDailyStatistics, FetchMonthlyStatistics } from 'helpers/stats';
 import { FormatSeconds } from 'modules/utils/time';
 import { GithubConfig } from 'modules/config';
 import { GenerateGithubTable } from 'modules/utils/table';
@@ -12,14 +12,9 @@ const CRON = '*/5 * * * *';
 
 async function UpdateGitHubReadme(): Promise<void> {
   // Map out variables
-  const weekly_db_stats = await FetchStatistics();
   const daily_db_stats = await FetchDailyStatistics();
-
-  const weekly_stats = {
-    hours: FormatSeconds(weekly_db_stats.development_seconds),
-    commands: weekly_db_stats.commands_ran.toLocaleString(),
-    builds: weekly_db_stats.builds_ran.toLocaleString()
-  };
+  const weekly_db_stats = await FetchStatistics();
+  const monthly_db_stats = await FetchMonthlyStatistics();
 
   const daily_stats = {
     hours: FormatSeconds(daily_db_stats.development_seconds),
@@ -27,8 +22,20 @@ async function UpdateGitHubReadme(): Promise<void> {
     builds: daily_db_stats.builds_ran.toLocaleString()
   };
 
+  const weekly_stats = {
+    hours: FormatSeconds(weekly_db_stats.development_seconds),
+    commands: weekly_db_stats.commands_ran.toLocaleString(),
+    builds: weekly_db_stats.builds_ran.toLocaleString()
+  };
+
+  const monthly_stats = {
+    hours: FormatSeconds(monthly_db_stats.development_seconds),
+    commands: monthly_db_stats.commands_ran.toLocaleString(),
+    builds: monthly_db_stats.builds_ran.toLocaleString()
+  };
+
   // Generate the fancy table
-  const stats_table = GenerateGithubTable(daily_stats, weekly_stats);
+  const stats_table = GenerateGithubTable(daily_stats, weekly_stats, monthly_stats);
 
   let change = true;
 
