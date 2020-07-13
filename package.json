@@ -29,9 +29,9 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@dustinrouillard/database-connectors": "^1.0.2",
-    "@dustinrouillard/fastify-security": "^1.0.1",
-    "@dustinrouillard/fastify-utilities": "^1.0.4",
+    "@dustinrouillard/database-connectors": "^1.0.4",
+    "@dustinrouillard/fastify-security": "^1.0.2",
+    "@dustinrouillard/fastify-utilities": "^1.0.5",
     "@google-cloud/storage": "^5.1.1",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",

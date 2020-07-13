@@ -23,31 +23,31 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@dustinrouillard/database-connectors@^1.0.2":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@dustinrouillard/database-connectors/-/database-connectors-1.0.3.tgz#332342ce9aa1224a974c3cf240d19a8b93b7b61f"
-  integrity sha512-kczDRps/OJUOF9NfP5gVplsxEJxYgFXQgQBiAA09bilocwtAhKeVkzkgFeh081acGx6ydvj8C4Tu+LSbb2nUSQ==
+"@dustinrouillard/database-connectors@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@dustinrouillard/database-connectors/-/database-connectors-1.0.4.tgz#03182efbb8fb7f66b76585263e7ab63c4890a197"
+  integrity sha512-+18ISWCddKcE/b9ihPbZxy8zrkVSdSiUCKVogPTEniaF43MTLMPsJIKA9x0VOU3AcCTkZx0OO80cs1ryXnq3Ug==
   dependencies:
-    "@dustinrouillard/fastify-utilities" "^1.0.2"
+    "@dustinrouillard/fastify-utilities" "^1.0.5"
     "@types/ioredis" "^4.16.1"
     cassandra-driver "^4.5.2"
     ioredis "^4.16.3"
     pg-promise "^10.5.5"
 
-"@dustinrouillard/fastify-security@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-security/-/fastify-security-1.0.1.tgz#20a5ce7cb1db0c2cf245555eb50e77fe9c2e0e8f"
-  integrity sha512-pRPv8t/BzV3cu2EDo6weqqSEm3l+piHhr3vPEwmCnmqZlXlWPF5wWQO0oe5w9S8r8zNDB+EUj2JDmPUULNR4gQ==
+"@dustinrouillard/fastify-security@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-security/-/fastify-security-1.0.2.tgz#2e9d6b5ddd21e15b16a5049a42845c1af828ecf4"
+  integrity sha512-K8XihOU1u017iNtvvVTCNr/7qDqY7BW4hT+Q7t3nqoPzD2gPvHh4AzDrmhnRlYNa3wDFum8DtYXr+HCe2+BBwQ==
   dependencies:
-    "@dustinrouillard/fastify-utilities" "^1.0.2"
+    "@dustinrouillard/fastify-utilities" "^1.0.5"
     fastify "^2.14.1"
     fastify-plugin "^1.6.1"
     jsonwebtoken "^8.5.1"
 
-"@dustinrouillard/fastify-utilities@^1.0.2", "@dustinrouillard/fastify-utilities@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-utilities/-/fastify-utilities-1.0.4.tgz#b822e1e3513d3e14ac0d2520f04997bba32dd01b"
-  integrity sha512-JoHMl9ijct4FPqyLA5NQUXuejwSz/g1fdQEFOVIn3Jya+6Q0v3Wk2YNRS/lb0tN/39Salamhoa3pYYoA1rEW3w==
+"@dustinrouillard/fastify-utilities@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-utilities/-/fastify-utilities-1.0.5.tgz#c238bf030abbf80e66e86cf5f764477d6b176d0e"
+  integrity sha512-aEhIcqjvci8Dw2msPcD87UxvWRUlBU65ZeUfskX+9DaevsreNz+awItq5XTcmim3AgEnZgLUVFVN5MU1lPLlYQ==
   dependencies:
     "@types/node-fetch" "^2.5.7"
     chalk "^4.0.0"
