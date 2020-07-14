@@ -1,4 +1,4 @@
-import { FastifyInstance, RegisterOptions } from 'fastify';
+import { FastifyInstance, RegisterOptions, FastifyRequest, FastifyReply } from 'fastify';
 
 import { Middleware } from '@dustinrouillard/fastify-security';
 
@@ -7,6 +7,7 @@ import { AuthorizeSpotify, CallbackSpotify, CurrentPlaying, GetSpotifyHistory } 
 import { IncrementCommandCount, IncrementBuildCount, GetStatistics } from 'handlers/stats';
 import { UploadFileHandler, UploadImageHandler } from 'handlers/upload';
 import { SetSleepingStatus, GetCurrentState } from 'handlers/state';
+import { HealthCheck } from 'handlers/health';
 import { RunTask } from 'handlers/tasks';
 
 import { SpotifyConfig } from 'modules/config';
@@ -16,6 +17,9 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
   server.get('/', GetRoutes);
   server.get('/stats', GetStatistics);
   server.get('/state', GetCurrentState);
+
+  // Health check
+  server.get('/health', HealthCheck);
 
   // Spotify related routes
   server.get('/spotify', CurrentPlaying);
