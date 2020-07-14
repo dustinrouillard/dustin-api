@@ -1,5 +1,3 @@
-import { RedisClient } from '@dustinrouillard/database-connectors/redis';
-
 import { UpdateGitHubReadme } from 'modules/tasks/update_readme';
 import { GetDevelopmentHours } from 'modules/tasks/development_hours';
 import { PullTwitterFollowers } from 'modules/tasks/index_twitter_followers';
