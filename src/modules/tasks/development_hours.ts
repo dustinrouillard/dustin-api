@@ -27,9 +27,8 @@ export async function GetDevelopmentHours(): Promise<void> {
   await CassandraClient.batch(queries);
 }
 
-const Job = new CronJob(CRON, GetDevelopmentHours, null, true, 'America/Los_Angeles');
-
 export async function Activate(): Promise<void> {
+  const Job = new CronJob(CRON, GetDevelopmentHours, null, true, 'America/Los_Angeles');
   Log(`Starting task runner for getting development hours [${CRON}]`);
   GetDevelopmentHours();
   Job.start();

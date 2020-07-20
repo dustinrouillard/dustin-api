@@ -68,9 +68,8 @@ export async function PullTwitterFollowers(): Promise<void> {
   await RedisClient.set('tasks/twitter_followers/last_run', Date.now(), 'ex', 900);
 }
 
-const Job = new CronJob(CRON, PullTwitterFollowers, null, true, 'America/Los_Angeles');
-
 export async function Activate(): Promise<void> {
+  const Job = new CronJob(CRON, PullTwitterFollowers, null, true, 'America/Los_Angeles');
   Log(`Starting task runner for pulling twitter followers [${CRON}]`);
   PullTwitterFollowers();
   Job.start();

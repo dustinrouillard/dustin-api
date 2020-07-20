@@ -72,14 +72,13 @@ export async function UpdateGitHubReadme(): Promise<void> {
     if (!old_information_table) change = true;
 
     /// If the stats table is the same as the current change don't make the change
-    if (old_stats_table == stats_table) change = false;
-    if (old_information_table == information_table) change = false;
+    if (old_information_table == information_table && old_stats_table == stats_table) change = false;
 
     // Ignore the change if the contents is the same
     if (!change) return;
 
     let new_readme = github_readme.replace(old_stats_table, stats_table);
-    new_readme = github_readme.replace(old_information_table, information_table);
+    new_readme = new_readme.replace(old_information_table, information_table);
 
     // Update the contents of the gist
     await Fetch(`https://api.github.com/repos/${GithubConfig.Username}/${GithubConfig.Username}/contents/README.md`, {
@@ -100,9 +99,8 @@ export async function UpdateGitHubReadme(): Promise<void> {
   }
 }
 
-const Job = new CronJob(CRON, UpdateGitHubReadme, null, true, 'America/Los_Angeles');
-
 export async function Activate(): Promise<void> {
+  const Job = new CronJob(CRON, UpdateGitHubReadme, null, true, 'America/Los_Angeles');
   Log(`Starting task runner for updating readme [${CRON}]`);
   UpdateGitHubReadme();
   Job.start();

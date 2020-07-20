@@ -42,9 +42,8 @@ export async function UpdateStatisticsGist(): Promise<void> {
   }
 }
 
-const Job = new CronJob(CRON, UpdateStatisticsGist, null, true, 'America/Los_Angeles');
-
 export async function Activate(): Promise<void> {
+  const Job = new CronJob(CRON, UpdateStatisticsGist, null, true, 'America/Los_Angeles');
   Log(`Starting task runner for updating gist(s) [${CRON}]`);
   UpdateStatisticsGist();
   Job.start();
