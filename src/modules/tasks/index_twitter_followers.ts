@@ -37,7 +37,7 @@ export async function PullTwitterFollowers(): Promise<void> {
   const query = twitter_followers.map((user: TwitterUser) => {
     return {
       query:
-        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       params: [
         user.id.toString(),
         user.screen_name,
@@ -53,7 +53,8 @@ export async function PullTwitterFollowers(): Promise<void> {
         user.friends_count,
         user.statuses_count,
         user.favourites_count,
-        user.location
+        user.location,
+        new Date()
       ]
     };
   });
