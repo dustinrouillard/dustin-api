@@ -1,6 +1,6 @@
 import { CronJob } from 'cron';
 
-import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { GetFollowers } from 'helpers/twitter';
 import { TwitterUser, DatabaseTwitterUser } from 'modules/interfaces/ITwitter';
@@ -23,21 +23,47 @@ async function GetCurrentFollowers(): Promise<DatabaseTwitterUser[]> {
 export async function PullTwitterFollowers(): Promise<void> {
   // Check last run time in redis before running this again to make sure it is more than 15 minutes
   const last_run = await RedisClient.get('tasks/twitter_followers/last_run');
-  if (last_run) return;
+  // if (last_run) return;
 
   const twitter_followers = await GetFollowers();
 
   // Get all twitter followers we already have from cassandra or redis
-  // const current_followers = await GetCurrentFollowers();
+  const current_followers = await GetCurrentFollowers();
 
   // Filter out unfollowers
-  // const unfollowers = current_followers.filter((cF) => !twitter_followers.some((tF) => cF.username == tF.screen_name));
-  // if (unfollowers.length > 0) Debug(`Twitter : We found ${unfollowers.length.toLocaleString()} unfollowers`);
+  const unfollowers = current_followers.filter((cF) => !twitter_followers.some((tF) => cF.id == tF.id.toString()));
+  console.log(unfollowers.length, 'users no longer following');
+  if (unfollowers.length > 0) Debug(`Twitter : We found ${unfollowers.length.toLocaleString()} unfollowers`);
 
-  const query = twitter_followers.map((user: TwitterUser) => {
+  const unfollowersQuery = unfollowers.map((user) => {
     return {
       query:
-        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location, last_updated) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location, is_follower) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      params: [
+        user.id.toString(),
+        user.username,
+        user.name,
+        user.verified,
+        user.protected,
+        user.image,
+        user.banner,
+        user.color,
+        user.description,
+        user.url,
+        user.followers,
+        user.following,
+        user.statuses,
+        user.likes,
+        user.location,
+        unfollowers.filter((uF) => uF.id == user.id.toString()).length > 0 ? false : true
+      ]
+    };
+  });
+
+  const followersQuery = twitter_followers.map((user: TwitterUser) => {
+    return {
+      query:
+        'INSERT INTO twitter_followers (id, username, name, verified, protected, image, banner, color, description, url, followers, following, statuses, likes, location, is_follower) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       params: [
         user.id.toString(),
         user.screen_name,
@@ -54,10 +80,12 @@ export async function PullTwitterFollowers(): Promise<void> {
         user.statuses_count,
         user.favourites_count,
         user.location,
-        new Date()
+        unfollowers.filter((uF) => uF.id == user.id.toString()).length > 0 ? false : true
       ]
     };
   });
+
+  const query = [...unfollowersQuery, ...followersQuery];
 
   const all_queries = [];
   while (query.length > 0) all_queries.push(query.splice(0, 50));
