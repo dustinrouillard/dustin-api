@@ -32,7 +32,6 @@ export async function PullTwitterFollowers(): Promise<void> {
 
   // Filter out unfollowers
   const unfollowers = current_followers.filter((cF) => !twitter_followers.some((tF) => cF.id == tF.id.toString()));
-  console.log(unfollowers.length, 'users no longer following');
   if (unfollowers.length > 0) Debug(`Twitter : We found ${unfollowers.length.toLocaleString()} unfollowers`);
 
   const unfollowersQuery = unfollowers.map((user) => {
@@ -55,7 +54,7 @@ export async function PullTwitterFollowers(): Promise<void> {
         user.statuses,
         user.likes,
         user.location,
-        unfollowers.filter((uF) => uF.id == user.id.toString()).length > 0 ? false : true
+        false
       ]
     };
   });
@@ -80,7 +79,7 @@ export async function PullTwitterFollowers(): Promise<void> {
         user.statuses_count,
         user.favourites_count,
         user.location,
-        unfollowers.filter((uF) => uF.id == user.id.toString()).length > 0 ? false : true
+        true
       ]
     };
   });
