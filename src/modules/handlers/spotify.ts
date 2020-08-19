@@ -4,8 +4,9 @@ import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/respo
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { SetupSpotify, GetSpotifyAuthorization, GetCurrentPlaying, PlayingHistory } from 'helpers/spotify';
+import { Validate } from '@dustinrouillard/fastify-utilities/modules/validation';
 
-export async function AuthorizeSpotify(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function AuthorizeSpotify(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     return Success(reply, 200, GetSpotifyAuthorization());
   } catch (error) {
@@ -14,7 +15,7 @@ export async function AuthorizeSpotify(req: FastifyRequest<{}, {}, {}, {}, {}>, 
   }
 }
 
-export async function CallbackSpotify(req: FastifyRequest<{}, { code: string }, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function CallbackSpotify(req: FastifyRequest<{ Querystring: { code: string } }>, reply: FastifyReply): Promise<void> {
   try {
     await SetupSpotify(req.query.code);
 
@@ -25,7 +26,7 @@ export async function CallbackSpotify(req: FastifyRequest<{}, { code: string }, 
   }
 }
 
-export async function CurrentPlaying(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function CurrentPlaying(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     const playing = await GetCurrentPlaying();
 
@@ -36,8 +37,11 @@ export async function CurrentPlaying(req: FastifyRequest<{}, {}, {}, {}, {}>, re
   }
 }
 
-export async function GetSpotifyHistory(req: FastifyRequest<{}, { range: 'day' | 'week' | 'month' }, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function GetSpotifyHistory(req: FastifyRequest<{ Querystring: { range: 'day' | 'week' | 'month' } }>, reply: FastifyReply): Promise<void> {
   try {
+    await Validate(req.query, {
+      range: { type: 'string', allowed: ['day', 'week', 'month'], casing: 'any' }
+    });
     const history = await PlayingHistory(req.query.range);
 
     return Success(reply, 200, history);

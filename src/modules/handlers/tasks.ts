@@ -5,7 +5,7 @@ import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { ExecuteTask } from 'helpers/tasks';
 
-export async function RunTask(req: FastifyRequest<{}, {}, { task_name: string }, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function RunTask(req: FastifyRequest<{ Params: { task_name: string } }>, reply: FastifyReply): Promise<void> {
   try {
     await ExecuteTask(req.params.task_name);
 

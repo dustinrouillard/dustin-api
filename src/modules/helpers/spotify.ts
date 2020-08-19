@@ -6,7 +6,7 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { SpotifyConfig, BaseURL } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 
-import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory } from 'modules/interfaces/ISpotify';
+import { PlayerResponse, InternalPlayerResponse } from 'modules/interfaces/ISpotify';
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 

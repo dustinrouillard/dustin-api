@@ -4,7 +4,7 @@ import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/respo
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { BaseURL } from 'modules/config';
 
-export async function GetRoutes(req: FastifyRequest<{}, {}, {}, {}, { sleeping: boolean }>, reply: FastifyReply<{}>): Promise<void> {
+export async function GetRoutes(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     return Success(reply, 200, {
       fqdn: req.hostname,

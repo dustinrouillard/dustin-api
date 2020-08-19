@@ -6,7 +6,7 @@ import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { Upload } from 'helpers/uploader';
 
-export async function UploadImageHandler(req: FastifyRequest<{}, {}, {}, {}, { file: string; name?: string }>, reply: FastifyReply<{}>): Promise<void> {
+export async function UploadImageHandler(req: FastifyRequest<{ Body: { file: string; name?: string } }>, reply: FastifyReply): Promise<void> {
   try {
     await Validate(
       req.body,
@@ -26,7 +26,7 @@ export async function UploadImageHandler(req: FastifyRequest<{}, {}, {}, {}, { f
   }
 }
 
-export async function UploadFileHandler(req: FastifyRequest<{}, {}, {}, {}, { file: string; name?: string }>, reply: FastifyReply<{}>): Promise<void> {
+export async function UploadFileHandler(req: FastifyRequest<{ Body: { file: string; name?: string } }>, reply: FastifyReply): Promise<void> {
   try {
     await Validate(
       req.body,

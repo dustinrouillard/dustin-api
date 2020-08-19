@@ -1,4 +1,4 @@
-import { FastifyInstance, RegisterOptions, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, RegisterOptions } from 'fastify';
 
 import { Middleware } from '@dustinrouillard/fastify-security';
 
@@ -12,7 +12,7 @@ import { RunTask } from 'handlers/tasks';
 
 import { SpotifyConfig } from 'modules/config';
 
-export function UnauthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
+export function UnauthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions, next?: () => void): void {
   // Base routes
   server.get('/', GetRoutes);
   server.get('/stats', GetStatistics);
@@ -30,7 +30,7 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
   if (next) next();
 }
 
-export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
+export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions, next?: () => void): void {
   server.register(Middleware());
   // Stats routes
   server.post('/stats/track/commands', IncrementCommandCount);
@@ -46,7 +46,7 @@ export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterO
   if (next) next();
 }
 
-export function TaskRoutes(server: FastifyInstance, _options: RegisterOptions<{}, {}, {}>, next?: () => void): void {
+export function TaskRoutes(server: FastifyInstance, _options: RegisterOptions, next?: () => void): void {
   server.register(Middleware());
   server.post('/tasks/:task_name', RunTask);
 

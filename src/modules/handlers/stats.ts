@@ -5,7 +5,7 @@ import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { IncrementTotalCommandCount, FetchStatistics, IncrementTotalBuildCount, FetchMonthlyStatistics, FetchDailyStatistics } from 'helpers/stats';
 
-export async function IncrementCommandCount(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function IncrementCommandCount(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     await IncrementTotalCommandCount();
 
@@ -16,7 +16,7 @@ export async function IncrementCommandCount(req: FastifyRequest<{}, {}, {}, {}, 
   }
 }
 
-export async function IncrementBuildCount(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function IncrementBuildCount(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     await IncrementTotalBuildCount();
 
@@ -27,7 +27,7 @@ export async function IncrementBuildCount(req: FastifyRequest<{}, {}, {}, {}, {}
   }
 }
 
-export async function GetStatistics(req: FastifyRequest<{}, {}, {}, {}, {}>, reply: FastifyReply<{}>): Promise<void> {
+export async function GetStatistics(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     const monthly = await FetchMonthlyStatistics();
     const daily = await FetchDailyStatistics();

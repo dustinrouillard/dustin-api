@@ -31,11 +31,11 @@
   "dependencies": {
     "@dustinrouillard/database-connectors": "^1.0.4",
     "@dustinrouillard/fastify-security": "^1.0.2",
-    "@dustinrouillard/fastify-utilities": "^1.0.5",
+    "@dustinrouillard/fastify-utilities": "^1.0.9",
     "@google-cloud/storage": "^5.1.1",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
-    "fastify": "^2.14.1",
+    "fastify": "^3.2.1",
     "file-type": "^14.6.2",
     "module-alias": "^2.2.2",
     "xml2js": "^0.4.23"
