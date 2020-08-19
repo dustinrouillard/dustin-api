@@ -34,14 +34,14 @@
     ioredis "^4.16.3"
     pg-promise "^10.5.5"
 
-"@dustinrouillard/fastify-security@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-security/-/fastify-security-1.0.2.tgz#2e9d6b5ddd21e15b16a5049a42845c1af828ecf4"
-  integrity sha512-K8XihOU1u017iNtvvVTCNr/7qDqY7BW4hT+Q7t3nqoPzD2gPvHh4AzDrmhnRlYNa3wDFum8DtYXr+HCe2+BBwQ==
+"@dustinrouillard/fastify-security@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-security/-/fastify-security-1.0.3.tgz#d1cdcf6aad66aa5a6465844341702a01451d9c0e"
+  integrity sha512-DW0zUVWdOrN1KsOP+pHlLvsr/0CsPUcX5Jtyti6IQtjECTBK5wYAOIzUBGt3ZIeGW5hV4vntaPEoCDsKZAJ6Mg==
   dependencies:
     "@dustinrouillard/fastify-utilities" "^1.0.5"
-    fastify "^2.14.1"
-    fastify-plugin "^1.6.1"
+    fastify "^3.2.1"
+    fastify-plugin "^2.3.0"
     jsonwebtoken "^8.5.1"
 
 "@dustinrouillard/fastify-utilities@^1.0.5":
@@ -1039,7 +1039,7 @@ fastify-plugin@^1.6.1:
   dependencies:
     semver "^6.3.0"
 
-fastify-plugin@^2.0.1:
+fastify-plugin@^2.0.1, fastify-plugin@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-2.3.0.tgz#ef09432fd099e7cbd45f9612efc22da1da213fea"
   integrity sha512-FOfgK3ORSXMl9AbXmkADH2gZ4qiegcYuJfDxKNlL0jQKLndbXYoBjifinYkSi2mTewDwu/LMlAGe4PVyhLpSXA==
