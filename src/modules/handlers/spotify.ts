@@ -39,7 +39,7 @@ export async function CurrentPlaying(req: FastifyRequest, reply: FastifyReply): 
 
 export async function GetSpotifyHistory(req: FastifyRequest<{ Querystring: { range: 'day' | 'week' | 'month' } }>, reply: FastifyReply): Promise<void> {
   try {
-    await Validate(req.query || { range: 'day' }, {
+    await Validate(req.query, {
       range: { type: 'string', allowed: ['day', 'week', 'month'], casing: 'any' }
     });
     const history = await PlayingHistory(req.query.range);
