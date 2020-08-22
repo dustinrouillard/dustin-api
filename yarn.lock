@@ -55,10 +55,10 @@
     fastify-plugin "^1.6.1"
     node-fetch "^2.6.0"
 
-"@dustinrouillard/fastify-utilities@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-utilities/-/fastify-utilities-1.2.0.tgz#c673fe2804bbbf6110dbab84e6c4e368fe1dded0"
-  integrity sha512-360ea1BbaC9AIrWpGX+0po0hJwZPLcGt8gidNIGyw7TTHy2iTJRYbkQuk52zM+/i+HGho0f94FJar+sApHkiMw==
+"@dustinrouillard/fastify-utilities@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@dustinrouillard/fastify-utilities/-/fastify-utilities-1.2.1.tgz#b731b4a3e672046a0188edf4f7b78306cb0df4e2"
+  integrity sha512-vEiUfNVzZwAkUDTn7porRxATygKvTuWMGAnazyQ+EpuPD3jRa7fdpz7LwPDzFpbKtXWS1UpDCSOW8bYcWWP0WQ==
   dependencies:
     "@types/node-fetch" "^2.5.7"
     chalk "^4.0.0"
