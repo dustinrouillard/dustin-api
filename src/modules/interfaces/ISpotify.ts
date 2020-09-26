@@ -53,6 +53,17 @@ export interface Item {
   uri: string;
 }
 
+export interface SpotifyArtistItem {
+  id: string;
+  name: string;
+  images: { height: number; width: number; url: string }[];
+  genres: string[];
+  popularity: number;
+  followers: {
+    total: number;
+  };
+}
+
 export interface Show {
   description: string;
   id: string;

@@ -3,7 +3,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/response';
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
-import { SetupSpotify, GetSpotifyAuthorization, GetCurrentPlaying, PlayingHistory } from 'helpers/spotify';
+import { SetupSpotify, GetSpotifyAuthorization, GetCurrentPlaying, PlayingHistory, FetchTopTrack, FetchTopArtist } from 'helpers/spotify';
 import { Validate } from '@dustinrouillard/fastify-utilities/modules/validation';
 
 export async function AuthorizeSpotify(req: FastifyRequest, reply: FastifyReply): Promise<void> {
@@ -43,6 +43,28 @@ export async function GetSpotifyHistory(req: FastifyRequest<{ Querystring: { ran
       range: { type: 'string', allowed: ['day', 'week', 'month'], casing: 'any' }
     });
     const history = await PlayingHistory(req.query.range);
+
+    return Success(reply, 200, history);
+  } catch (error) {
+    Debug(error);
+    return Catch(reply, error);
+  }
+}
+
+export async function GetTopTrack(req: FastifyRequest, reply: FastifyReply): Promise<void> {
+  try {
+    const history = await FetchTopTrack();
+
+    return Success(reply, 200, history);
+  } catch (error) {
+    Debug(error);
+    return Catch(reply, error);
+  }
+}
+
+export async function GetTopArtist(req: FastifyRequest<{ Querystring: { range: 'day' | 'week' | 'month' } }>, reply: FastifyReply): Promise<void> {
+  try {
+    const history = await FetchTopArtist();
 
     return Success(reply, 200, history);
   } catch (error) {
