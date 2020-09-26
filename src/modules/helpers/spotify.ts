@@ -208,7 +208,7 @@ export async function FetchTopTrack(): Promise<Partial<DatabaseSpotifyHistory & 
   if (!remove_dupes) throw { code: 'no_highest' };
 
   // Store in redis for 10 minutes
-  await RedisClient.set(`spotify/top/tracks`, JSON.stringify({ cached_at: new Date().toUTCString(), history: sorted }), 'ex', 600);
+  await RedisClient.set(`spotify/top/tracks`, JSON.stringify({ cached_at: new Date().toUTCString(), history: remove_dupes }), 'ex', 600);
 
   return remove_dupes;
 }
@@ -239,10 +239,12 @@ export async function FetchTopArtist(): Promise<(ArtistItem & { times: number })
 
   if (!tracks) throw { code: 'no_highest' };
 
-  // Store in redis for 10 minutes
-  await RedisClient.set(`spotify/top/artist`, JSON.stringify({ cached_at: new Date().toUTCString(), history: sorted }), 'ex', 600);
+  const data = ([] as (ArtistItem & { times: number })[]).concat(...((tracks as unknown) as (ArtistItem & { times: number })[]));
 
-  return ([] as (ArtistItem & { times: number })[]).concat(...((tracks as unknown) as (ArtistItem & { times: number })[]));
+  // Store in redis for 10 minutes
+  await RedisClient.set(`spotify/top/artist`, JSON.stringify({ cached_at: new Date().toUTCString(), history: data }), 'ex', 600);
+
+  return data;
 }
 
 // Run the check for config function on start to load up the spotify details.
