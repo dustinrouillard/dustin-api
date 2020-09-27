@@ -3,11 +3,14 @@ import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cas
 import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { GetCurrentPlaying } from 'helpers/spotify';
+import { SpotifyConfig } from 'modules/config';
 import { DatabaseSpotifyHistory } from 'modules/interfaces/ISpotify';
 
 const MS = 10000;
 
 export async function LogSpotifyListenHistory(): Promise<void> {
+  if (!SpotifyConfig.IsConfigured) return;
+
   // Pull spotify now playing data
   const spotify_playing = await GetCurrentPlaying();
 
