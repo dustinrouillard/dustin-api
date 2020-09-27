@@ -1,9 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 
-import { Success, Catch } from '@dustinrouillard/fastify-utilities/modules/response';
+import { Success, Catch, Failed } from '@dustinrouillard/fastify-utilities/modules/response';
 import { Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { IncrementTotalCommandCount, FetchStatistics, IncrementTotalBuildCount, FetchMonthlyStatistics, FetchDailyStatistics } from 'helpers/stats';
+import { WakatimeConfig } from 'modules/config';
 
 export async function IncrementCommandCount(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {

@@ -11,13 +11,13 @@ import { SetSleepingStatus, GetCurrentState } from 'handlers/state';
 import { HealthCheck } from 'handlers/health';
 import { RunTask } from 'handlers/tasks';
 
-import { SpotifyConfig } from 'modules/config';
+import { ModulesDisabled, SpotifyConfig } from 'modules/config';
 
 export function UnauthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions, next?: () => void): void {
   // Base routes
   server.get('/', GetRoutes);
-  server.get('/stats', GetStatistics);
-  server.get('/state', GetCurrentState);
+  if (!ModulesDisabled.STATS) server.get('/stats', GetStatistics);
+  if (!ModulesDisabled.STATE) server.get('/state', GetCurrentState);
 
   // // Location
   // server.get('/location', GetLocationData);
@@ -26,12 +26,12 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
   server.get('/health', HealthCheck);
 
   // Spotify related routes
-  server.get('/spotify', CurrentPlaying);
-  server.get('/spotify/history', GetSpotifyHistory);
+  if (!ModulesDisabled.SPOTIFY && SpotifyConfig.IsConfigured) server.get('/spotify', CurrentPlaying);
+  if (!ModulesDisabled.SPOTIFY && SpotifyConfig.IsConfigured) server.get('/spotify/history', GetSpotifyHistory);
 
   // Spotify Top
-  server.get('/spotify/top/track', GetTopTrack);
-  server.get('/spotify/top/artist', GetTopArtist);
+  if (!ModulesDisabled.SPOTIFY && SpotifyConfig.IsConfigured) server.get('/spotify/top/track', GetTopTrack);
+  if (!ModulesDisabled.SPOTIFY && SpotifyConfig.IsConfigured) server.get('/spotify/top/artist', GetTopArtist);
 
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/authorize', AuthorizeSpotify);
   if (!SpotifyConfig.IsConfigured) server.get('/spotify/callback', CallbackSpotify);
@@ -42,18 +42,18 @@ export function UnauthenticatedRoutes(server: FastifyInstance, _options: Registe
 export function AuthenticatedRoutes(server: FastifyInstance, _options: RegisterOptions, next?: () => void): void {
   server.register(Middleware());
   // Stats routes
-  server.post('/stats/track/commands', IncrementCommandCount);
-  server.post('/stats/track/docker', IncrementBuildCount);
+  if (!ModulesDisabled.STATS) server.post('/stats/track/commands', IncrementCommandCount);
+  if (!ModulesDisabled.STATS) server.post('/stats/track/docker', IncrementBuildCount);
 
   // // Location routes
   // server.post('/location', SetAtLocation);
 
   // State routes
-  server.post('/state/sleeping', SetSleepingStatus);
+  if (!ModulesDisabled.STATE) server.post('/state/sleeping', SetSleepingStatus);
 
   // Uplaoder routes
-  server.post('/upload/image', UploadImageHandler);
-  server.post('/upload/file', UploadFileHandler);
+  if (!ModulesDisabled.FILES) server.post('/upload/image', UploadImageHandler);
+  if (!ModulesDisabled.FILES) server.post('/upload/file', UploadFileHandler);
 
   if (next) next();
 }

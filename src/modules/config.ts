@@ -5,6 +5,13 @@ dotenv.config();
 export const BaseURL = process.env.BASE_URL || 'http://127.0.0.1:1300';
 export const PortConfig = Number(process.env.PORT) || 1300;
 
+export const ModulesDisabled = {
+  SPOTIFY: process.env.MODULE_SPOTIFY == 'disabled' || false,
+  STATS: process.env.MODULE_STATS == 'disabled' || false,
+  STATE: process.env.MODULE_STATE == 'disabled' || false,
+  FILES: process.env.MODULE_FILES == 'disabled' || false
+};
+
 export const GithubConfig = {
   Username: process.env.GITHUB_USERNAME || '',
   Gist: process.env.GITHUB_GIST || '',
