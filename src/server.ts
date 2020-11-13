@@ -1,6 +1,7 @@
 import 'module-alias/register';
 
 import fastify from 'fastify';
+import fastifyCors from 'fastify-cors';
 
 import { PortConfig } from './modules/config';
 
@@ -15,6 +16,12 @@ const server = fastify();
 
 // Register request logger
 server.register(Logger);
+
+server.register(fastifyCors, {
+  origin: (_origin, cb) => {
+    cb(null, true);
+  }
+});
 
 // Routes
 server.register(AuthenticatedRoutes);

@@ -36,6 +36,7 @@
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
     "fastify": "^3.2.1",
+    "fastify-cors": "^4.1.0",
     "file-type": "^14.6.2",
     "module-alias": "^2.2.2",
     "xml2js": "^0.4.23"
