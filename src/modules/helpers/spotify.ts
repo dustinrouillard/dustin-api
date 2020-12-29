@@ -102,6 +102,10 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
 }
 
 export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
+  return (await RedisClient.exists('spotify/current')) ? JSON.parse((await RedisClient.get('spotify/current')) || '') : { is_playing: false };
+}
+
+export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResponse> {
   // Get current track data from spotify
   const current_track = await RequestWrapper<PlayerResponse>('https://api.spotify.com/v1/me/player?additional_types=episode', {
     headers: { authorization: `Bearer ${SpotifyAccount().access}` }
@@ -109,8 +113,9 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
 
   if (!['track', 'episode'].includes(current_track.currently_playing_type)) return { is_playing: false };
 
+  let current: InternalPlayerResponse;
   if (current_track.is_playing) {
-    return {
+    current = {
       is_playing: true,
       device_name: current_track.device.name,
       device_type: current_track.device.type,
@@ -123,7 +128,13 @@ export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
       item_length_ms: current_track.item.duration_ms,
       started_at: current_track.timestamp
     };
-  } else return { is_playing: false };
+  } else {
+    current = { is_playing: false };
+  }
+
+  await RedisClient.set('spotify/current', JSON.stringify(current));
+
+  return current;
 }
 
 export async function GetSongsInformation(ids: string[]): Promise<SpotifyTrack[]> {

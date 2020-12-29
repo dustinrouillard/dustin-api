@@ -1,4 +1,5 @@
 import { Activate as LogSpotifyListenHistory } from './spotify_listening_history';
+import { Activate as SpotifyCurrentPlayingWatcher } from './spotify_current';
 // import { Activate as PullTwitterFollowers } from './index_twitter_followers';
 // import { Activate as GetDevelopmentHours } from './development_hours';
 // import { Activate as UpdateStatisticsGist } from './update_gist';
@@ -13,6 +14,7 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
     // TODO: Move to a seperate deployment for only tasks (because it's seconds I cannot use cron ;( )
     await LogSpotifyListenHistory();
+    await SpotifyCurrentPlayingWatcher();
     // await PullTwitterFollowers(); CRONED
     // await GetDevelopmentHours(); CRONED
     // await UpdateStatisticsGist(); CRONED
