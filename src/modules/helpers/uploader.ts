@@ -5,12 +5,11 @@ import * as stream from 'stream';
 import { AlllowedTypes, UploadFile, UploadType } from 'utils/gcs';
 import { GoogleStorage } from 'modules/config';
 
-export async function Upload(base64: string, type: UploadType, name?: string): Promise<string> {
-  // Decode the base64 value into a file buffer
-  const file_uri = base64.split(';base64,')[1];
+import { Multipart } from 'fastify-multipart';
 
+export async function Upload(file: Multipart, type: UploadType, name?: string): Promise<string> {
   // Get buffer and file type
-  const buffer = Buffer.from(file_uri, 'base64');
+  const buffer = await file.toBuffer();
   const file_type = await typeFromBuffer(buffer);
 
   // Ignore mimetypes that are not allowed

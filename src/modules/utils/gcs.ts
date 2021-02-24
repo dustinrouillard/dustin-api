@@ -15,33 +15,35 @@ interface UploadOptions {
   type: string;
 }
 
-export async function UploadFile(options: UploadOptions): Promise<void> {
-  // Get target bucket
-  const bucket = gcs.bucket(GoogleStorage.Bucket);
+export async function UploadFile(options: UploadOptions): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    // Get target bucket
+    const bucket = gcs.bucket(GoogleStorage.Bucket);
 
-  // File definition
-  const file = bucket.file(options.path);
+    // File definition
+    const file = bucket.file(options.path);
 
-  // Meta data and content dispostion if it's not an image or video
-  const metadata: { [key: string]: string } = { contentType: options.type };
-  if (!(options.type.startsWith('image/') && !options.type.includes('svg')) && !options.type.startsWith('video/')) metadata.contentDisposition = 'attachment';
+    // Meta data and content dispostion if it's not an image or video
+    const metadata: { [key: string]: string } = { contentType: options.type };
+    if (!(options.type.startsWith('image/') && !options.type.includes('svg')) && !options.type.startsWith('video/')) metadata.contentDisposition = 'attachment';
 
-  // Upload the file to google
-  const stream = file.createWriteStream({
-    metadata,
-    public: options.public
+    // Upload the file to google
+    const stream = file.createWriteStream({
+      metadata,
+      public: options.public
+    });
+
+    // Wait for close and return when done.
+    stream.on('finish', async () => {
+      if (options.public) await file.makePublic();
+      resolve(true);
+    });
+
+    // If error debug log it and throw
+    stream.on('error', (error) => {
+      reject(error);
+    });
+
+    options.file.pipe(stream);
   });
-
-  // Wait for close and return when done.
-  stream.on('close', async () => {
-    if (options.public) await file.makePublic();
-    return true;
-  });
-
-  // If error debug log it and throw
-  stream.on('error', (error) => {
-    throw error;
-  });
-
-  options.file.pipe(stream);
 }
