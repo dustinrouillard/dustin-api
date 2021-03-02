@@ -7,6 +7,7 @@ const gcs = new Storage();
 
 export type UploadType = 'image' | 'file';
 export const AlllowedTypes = ['image/gif', 'image/png', 'image/svg', 'image/webp', 'image/jpeg'];
+export const AlllowedFileTypes = [...AlllowedTypes, 'application/zip'];
 
 interface UploadOptions {
   path: string;

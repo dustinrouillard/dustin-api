@@ -2,7 +2,7 @@ import { fromBuffer as typeFromBuffer } from 'file-type';
 import { createHash } from 'crypto';
 import * as stream from 'stream';
 
-import { AlllowedTypes, UploadFile, UploadType } from 'utils/gcs';
+import { AlllowedFileTypes, AlllowedTypes, UploadFile, UploadType } from 'utils/gcs';
 import { GoogleStorage } from 'modules/config';
 
 import { Multipart } from 'fastify-multipart';
@@ -13,7 +13,7 @@ export async function Upload(file: Multipart, type: UploadType, name?: string): 
   const file_type = await typeFromBuffer(buffer);
 
   // Ignore mimetypes that are not allowed
-  if (!file_type?.mime || !AlllowedTypes.includes(file_type?.mime)) throw { code: 'invalid_file_type' };
+  if (!file_type?.mime || !(type == 'file' ? AlllowedFileTypes : AlllowedTypes.includes(file_type?.mime))) throw { code: 'invalid_file_type' };
 
   // Create the sha1 hash for the file name
   const hash = createHash('sha1').update(buffer).digest('hex').substring(0, 16);
