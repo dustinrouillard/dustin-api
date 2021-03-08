@@ -11,7 +11,7 @@ export async function UploadImageHandler(req: FastifyRequest<{ Body: { file: str
 
     return Success(reply, 200, URL);
   } catch (error) {
-    Debug(error);
+    Debug('Error in upload image handler', error);
     return Catch(reply, error);
   }
 }
@@ -22,7 +22,7 @@ export async function UploadFileHandler(req: FastifyRequest<{ Body: { file: stri
 
     return Success(reply, 200, URL);
   } catch (error) {
-    Debug(error);
+    Debug('Error in upload file handler', error);
     return Catch(reply, error);
   }
 }
