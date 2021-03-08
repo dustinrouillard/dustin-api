@@ -12,7 +12,35 @@ const minio = new Client({
 
 export type UploadType = 'image' | 'file';
 export const AlllowedTypes = ['image/gif', 'image/png', 'image/svg', 'image/webp', 'image/jpeg'];
-export const AlllowedFileTypes = [...AlllowedTypes, 'application/zip'];
+export const AlllowedFileTypes = [
+  ...AlllowedTypes,
+  'application/octet-stream',
+  'application/ogg',
+  'application/pdf',
+  'application/rtf',
+  'application/x-sh',
+  'application/x-tar',
+  'application/zip',
+  'audio/mpeg',
+  'audio/ogg',
+  'audio/opus',
+  'audio/wav',
+  'audio/webm',
+  'font/otf',
+  'font/ttf',
+  'font/woff',
+  'font/woff2',
+  'image/webp',
+  'text/css',
+  'text/csv',
+  'text/javascript',
+  'text/plain',
+  'video/mov',
+  'video/mp4',
+  'video/mpeg',
+  'video/ogg',
+  'video/webm'
+];
 
 interface UploadOptions {
   path: string;
