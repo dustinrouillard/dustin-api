@@ -10,7 +10,7 @@ export async function UploadImageHandler(req: FastifyRequest<{ Body: { file: str
     const file = await req.file();
     if (!file) return Failed(reply, 400, 'missing_file');
 
-    const URL = await Upload(await req.file(), 'image', req.body ? req.body.name : undefined);
+    const URL = await Upload(file, 'image', req.body ? req.body.name : undefined);
 
     return Success(reply, 200, URL);
   } catch (error) {
@@ -24,7 +24,7 @@ export async function UploadFileHandler(req: FastifyRequest<{ Body: { file: stri
     const file = await req.file();
     if (!file) return Failed(reply, 400, 'missing_file');
 
-    const URL = await Upload(await req.file(), 'file', req.body ? req.body.name : undefined);
+    const URL = await Upload(file, 'file', req.body ? req.body.name : undefined);
 
     return Success(reply, 200, URL);
   } catch (error) {
