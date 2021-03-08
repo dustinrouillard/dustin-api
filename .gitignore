@@ -17,6 +17,9 @@ development
 # Google account credentials
 .google.json
 
+# MinIO account credentials
+.minio.json
+
 # Ignore environment files
 .env.*
 .env

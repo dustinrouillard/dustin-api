@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/busboy": "^0.2.3",
     "@types/cron": "^1.7.2",
+    "@types/minio": "^7.0.7",
     "@types/module-alias": "^2.0.0",
     "@types/node": "^13.11.1",
     "@types/xml2js": "^0.4.5",
@@ -40,6 +41,7 @@
     "fastify-cors": "^4.1.0",
     "fastify-multipart": "^4.0.0",
     "file-type": "^14.6.2",
+    "minio": "^7.0.18",
     "module-alias": "^2.2.2",
     "xml2js": "^0.4.23"
   },

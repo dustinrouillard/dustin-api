@@ -1,9 +1,8 @@
 import { fromBuffer as typeFromBuffer } from 'file-type';
 import { createHash } from 'crypto';
-import * as stream from 'stream';
 
-import { AlllowedFileTypes, AlllowedTypes, UploadFile, UploadType } from 'utils/gcs';
-import { GoogleStorage } from 'modules/config';
+import { AlllowedFileTypes, AlllowedTypes, UploadFile, UploadType } from 'utils/minio';
+import { MinioStorage } from 'modules/config';
 
 import { Multipart } from 'fastify-multipart';
 
@@ -19,25 +18,21 @@ export async function Upload(file: Multipart, type: UploadType, name?: string): 
   const hash = createHash('sha1').update(buffer).digest('hex').substring(0, 16);
 
   // Folder and file path
-  const folder = type == 'image' ? GoogleStorage.ImagesFolder : GoogleStorage.UploadsFolder;
+  const folder = type == 'image' ? MinioStorage.ImagesFolder : MinioStorage.UploadsFolder;
   const file_path = `${name || hash}.${file_type.ext}`;
-
-  // Create the buffer stream
-  const bufferStream = new stream.PassThrough();
-  bufferStream.end(buffer, 'base64');
 
   // Upload file using the upload utility
   await UploadFile({
-    file: bufferStream,
+    file: buffer,
     path: `${folder}/${file_path}`,
     public: true,
     type: file_type.mime
   });
 
   // Custom domain responses
-  let url = `${GoogleStorage.Host}/${folder}/${file_path}`;
-  if (type == 'image' && GoogleStorage.ImagesDomain) url = `${GoogleStorage.ImagesDomain}/${file_path}`;
-  if (type == 'file' && GoogleStorage.UploadsDomain) url = `${GoogleStorage.UploadsDomain}/${file_path}`;
+  let url = `${MinioStorage.Host}/${folder}/${file_path}`;
+  if (type == 'image' && MinioStorage.ImagesDomain) url = `${MinioStorage.ImagesDomain}/${file_path}`;
+  if (type == 'file' && MinioStorage.UploadsDomain) url = `${MinioStorage.UploadsDomain}/${file_path}`;
 
   return url;
 }

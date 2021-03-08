@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 dotenv.config();
 
 export const BaseURL = process.env.BASE_URL || 'http://127.0.0.1:1300';
@@ -44,4 +44,23 @@ export const GoogleStorage = {
   UploadsDomain: process.env.GCS_UPLOADS_CUSTOM_DOMAIN || '',
   ImagesFolder: process.env.GCS_IMAGES_FOLDER || '',
   UploadsFolder: process.env.GCS_UPLOADS_FOLDER || ''
+};
+
+interface MinioConfig {
+  endpoint: string;
+  port: number;
+  ssl: boolean;
+  accessKey: string;
+  secretKey: string;
+}
+
+export const MinioStorage = {
+  Bucket: process.env.MINIO_BUCKET || '',
+  Host: process.env.MINIO_MEDIA_HOST || '',
+  ImagesDomain: process.env.MINIO_IMAGES_CUSTOM_DOMAIN || '',
+  UploadsDomain: process.env.MINIO_UPLOADS_CUSTOM_DOMAIN || '',
+  ImagesFolder: process.env.MINIO_IMAGES_FOLDER || '',
+  UploadsFolder: process.env.MINIO_UPLOADS_FOLDER || '',
+  IsConfigured: existsSync('.config/.minio.json'),
+  Config: (existsSync('.config/.minio.json') ? JSON.parse(readFileSync('.config/.minio.json').toString()) : {}) as MinioConfig
 };
