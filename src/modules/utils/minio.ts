@@ -55,7 +55,7 @@ export async function UploadFile(options: UploadOptions): Promise<boolean> {
     const metadata: { [key: string]: string | object } = { 'content-type': options.type };
     if (!(options.type.startsWith('image/') && !options.type.includes('svg')) && !options.type.startsWith('video/') && !options.type.startsWith('text/')) metadata.contentDisposition = 'attachment';
 
-    minio.putObject(MinioStorage.Bucket, options.path, options.file, options.file.length, metadata, (error, test) => {
+    minio.putObject(MinioStorage.Bucket, options.path, options.file, options.file.length, metadata, (error) => {
       if (error) return reject(error);
 
       return resolve(true);
