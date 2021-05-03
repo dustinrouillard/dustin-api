@@ -42,7 +42,7 @@ export async function Upload(file: Multipart, type: UploadType, name?: string): 
 
   // Folder and file path
   const folder = type == 'image' ? MinioStorage.ImagesFolder : MinioStorage.UploadsFolder;
-  const file_path = `${name || hash}.${file_type.extension}`;
+  const file_path = `${name || hash}.${file_type.extension || 'txt'}`;
 
   // Upload file using the upload utility
   await UploadFile({
