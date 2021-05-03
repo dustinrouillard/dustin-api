@@ -35,7 +35,7 @@ export async function Upload(file: Multipart, type: UploadType, name?: string): 
   const file_type = await GetType(file, buffer);
 
   // Ignore mimetypes that are not allowed
-  if (!file.mimetype || !(type == 'file' ? AlllowedFileTypes : AlllowedTypes).includes(file.mimetype)) throw { code: 'invalid_file_type', data: file.mimetype };
+  if ((!file.mimetype || !AlllowedTypes.includes(file.mimetype)) && type == 'image') throw { code: 'invalid_file_type', data: file.mimetype };
 
   // Create the sha1 hash for the file name
   const hash = createHash('sha1').update(buffer).digest('hex').substring(0, 16);
