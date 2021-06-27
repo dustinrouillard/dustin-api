@@ -7,7 +7,7 @@ import { MinioStorage } from 'modules/config';
 import { Multipart } from 'fastify-multipart';
 
 const mimeConversations: { [key: string]: string } = {
-  'text/plain': '.txt'
+  'text/plain': 'txt'
 };
 
 interface FileType {
