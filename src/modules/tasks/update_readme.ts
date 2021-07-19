@@ -6,9 +6,7 @@ import { Log, Debug } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { FetchStatistics, FetchDailyStatistics, FetchMonthlyStatistics } from 'helpers/stats';
 import { FormatSeconds } from 'modules/utils/time';
 import { GithubConfig } from 'modules/config';
-import { GenerateGithubTable, GenerateInformationTable } from 'modules/utils/table';
-import { GetCurrentPlaying } from 'modules/helpers/spotify';
-import { GetSleepingState } from 'modules/helpers/state';
+import { GenerateGithubTable } from 'modules/utils/table';
 
 const CRON = '*/3 * * * *';
 
@@ -36,16 +34,8 @@ export async function UpdateGitHubReadme(): Promise<void> {
     builds: monthly_db_stats.builds_ran.toLocaleString()
   };
 
-  // Get current sleeping status
-  const sleeping = await GetSleepingState();
-
-  // Get current spotify playing status
-  const spotify_playing = await GetCurrentPlaying();
-
   // Generate the fancy table
   const stats_table = GenerateGithubTable(daily_stats, weekly_stats, monthly_stats);
-
-  const information_table = GenerateInformationTable({ music_playing: spotify_playing.is_playing, sleeping });
 
   let change = true;
 
@@ -65,20 +55,11 @@ export async function UpdateGitHubReadme(): Promise<void> {
     const old_stats_table = stats_table_check.split('\n\n######')[0];
     if (!old_stats_table) change = true;
 
-    // Find the old information table
-    const information_table_check = '| Information' + github_readme.split('| Information')[1];
-    if (!information_table_check) change = true;
-    const old_information_table = information_table_check.split('\n\n######')[0];
-    if (!old_information_table) change = true;
-
     /// If the stats table is the same as the current change don't make the change
-    if (old_information_table == information_table && old_stats_table == stats_table) change = false;
-
-    // Ignore the change if the contents is the same
+    if (old_stats_table == stats_table) change = false;
     if (!change) return;
 
-    let new_readme = github_readme.replace(old_stats_table, stats_table);
-    new_readme = new_readme.replace(old_information_table, information_table);
+    const new_readme = github_readme.replace(old_stats_table, stats_table);
 
     // Update the contents of the gist
     await Fetch(`https://api.github.com/repos/${GithubConfig.Username}/${GithubConfig.Username}/contents/README.md`, {
@@ -89,8 +70,8 @@ export async function UpdateGitHubReadme(): Promise<void> {
         content: Buffer.from(new_readme, 'utf8').toString('base64'),
         sha: readme_md.sha,
         author: {
-          name: 'dustin.rest - API Automation',
-          email: 'code@dustin.sh'
+          name: 'dstn.to - API Automation',
+          email: 'code@dstn.to'
         }
       }
     });
