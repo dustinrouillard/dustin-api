@@ -55,7 +55,7 @@ export async function UpdateGitHubReadme(): Promise<void> {
     const old_stats_table = stats_table_check.split('\n\n######')[0];
     if (!old_stats_table) change = true;
 
-    /// If the stats table is the same as the current change don't make the change
+    // If the stats table is the same as the current change don't make the change
     if (old_stats_table == stats_table) change = false;
     if (!change) return;
 
