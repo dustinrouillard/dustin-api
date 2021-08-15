@@ -6,16 +6,14 @@ import fastifyMultipart from 'fastify-multipart';
 
 import { PortConfig } from './modules/config';
 
-import 'tasks';
-
 import { Log, SetConfig } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { Logger, Missing } from '@dustinrouillard/fastify-utilities/modules/request';
 
-import { AuthenticatedRoutes, UnauthenticatedRoutes, TaskRoutes } from './routes';
-
 const server = fastify();
-
 SetConfig({ disableTimestamp: true });
+
+import 'tasks';
+import { AuthenticatedRoutes, UnauthenticatedRoutes, TaskRoutes } from './routes';
 
 // Register request logger
 server.register(Logger({ ignoredRoutes: ['/spotify', '/health'] }));
