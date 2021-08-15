@@ -8,15 +8,17 @@ import { PortConfig } from './modules/config';
 
 import 'tasks';
 
-import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Log, SetConfig } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { Logger, Missing } from '@dustinrouillard/fastify-utilities/modules/request';
 
 import { AuthenticatedRoutes, UnauthenticatedRoutes, TaskRoutes } from './routes';
 
 const server = fastify();
 
+SetConfig({ disableTimestamp: true });
+
 // Register request logger
-server.register(Logger);
+server.register(Logger());
 server.register(fastifyMultipart);
 
 server.register(fastifyCors, {
