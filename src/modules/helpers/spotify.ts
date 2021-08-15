@@ -12,7 +12,7 @@ import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cas
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
 import { changes } from 'modules/utils/changes';
-import { RabbitChannel } from 'connectivity/rabbitmq';
+import { RabbitChannel } from '../../connectivity/rabbitmq';
 
 export enum IngestTypes {
   SpotifyUpdate
