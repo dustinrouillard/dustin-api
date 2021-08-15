@@ -1,6 +1,6 @@
 # dustin.rest
 
-This is my personal api, it has many uses but was originally made to update my github gist, then github release profile readmes, and of course I had to innovate.
+This is my personal api, it has many uses but was originally made to update my github gist, then the github release profile readme, and of course I had to just keep going lol.
 
 Hosted version: [**rest.dstn.to**](https://rest.dstn.to)
 
