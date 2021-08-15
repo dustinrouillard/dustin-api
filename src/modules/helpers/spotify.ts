@@ -10,7 +10,12 @@ import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory, Item, S
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
-import { parse } from 'path';
+
+async function SongChanged(song: InternalPlayerResponse): Promise<void> {
+  await RedisClient.set('spotify/current', JSON.stringify(song));
+  // TODO: SEND TO RABBITMQ
+
+}
 
 export async function CheckForConfig(): Promise<void> {
   // Make sure we have a client id and secret
@@ -132,7 +137,8 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
     current = { is_playing: false };
   }
 
-  await RedisClient.set('spotify/current', JSON.stringify(current));
+  if (JSON.parse(await RedisClient.get('spotify/current') as string) != current)
+    SongChanged(current);
 
   return current;
 }
@@ -161,8 +167,8 @@ export async function GetSongsInformation(ids: string[]): Promise<SpotifyTrack[]
         track.type == 'episode'
           ? [track.show?.name || '']
           : artists
-              .filter((artist) => track.artists.map((trackArtist) => trackArtist.id).includes(artist.id))
-              .map((artist) => ({ id: artist.id, name: artist.name, image: artist.images[0].url, followers: artist.followers.total, popularity: artist.popularity, genres: artist.genres })),
+            .filter((artist) => track.artists.map((trackArtist) => trackArtist.id).includes(artist.id))
+            .map((artist) => ({ id: artist.id, name: artist.name, image: artist.images[0].url, followers: artist.followers.total, popularity: artist.popularity, genres: artist.genres })),
       album: track.type != 'episode' ? { id: track.album.id, name: track.album.name, image: track.type == 'episode' ? track.show?.images[0].url : track.album?.images[0].url } : undefined,
       explicit: track.explicit,
       duration: track.duration_ms

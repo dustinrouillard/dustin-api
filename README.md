@@ -24,4 +24,4 @@ Right now this api does only useful things to me, well.. Maybe somewhat useful t
 - Cassandra (Database)
 - Kubernetes (Deployment)
 - JWT (Internal Authentication)
-- Google Cloud Storage (Image/file hosting)
+- Minio (S3) (Image/file hosting)
