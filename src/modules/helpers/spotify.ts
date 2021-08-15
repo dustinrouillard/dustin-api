@@ -107,7 +107,7 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
 }
 
 export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
-  return (await RedisClient.exists('spotify/current')) ? JSON.parse((await RedisClient.get('spotify/current')) || '') : { is_playing: false };
+  return JSON.parse(await RedisClient.get('spotify/current') || '') || { is_playing: false };
 }
 
 export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResponse> {
