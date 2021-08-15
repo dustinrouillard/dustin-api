@@ -33,4 +33,4 @@ server.register(UnauthenticatedRoutes);
 server.register(TaskRoutes);
 server.register(Missing);
 
-server.listen(PortConfig, '0.0.0.0', () => Log(`Server ready on ${PortConfig}`));
+server.listen(PortConfig, '0.0.0.0', () => Log(`API: Listening on ${PortConfig}`));

@@ -1,8 +1,9 @@
 import qs from 'querystring';
 
 import { Fetch, RequestOptions } from '@dustinrouillard/fastify-utilities/modules/fetch';
-import { Debug, Log } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
+import { pack } from 'erlpack';
 import { SpotifyConfig, BaseURL } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
 
@@ -11,6 +12,11 @@ import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cas
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
 import { changes } from 'modules/utils/changes';
+import { RabbitChannel } from 'connectivity/rabbitmq';
+
+export enum IngestTypes {
+  SpotifyUpdate
+}
 
 async function SongChanged(song: InternalPlayerResponse): Promise<void> {
   const current = JSON.parse(await RedisClient.get('spotify/current') as string);
@@ -18,9 +24,9 @@ async function SongChanged(song: InternalPlayerResponse): Promise<void> {
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
   const changed = await changes<InternalPlayerResponse>(current, song);
-  Debug(changed);
 
   // TODO: SEND TO RABBITMQ
+  RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
 }
 
 export async function CheckForConfig(): Promise<void> {

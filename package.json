@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/amqplib": "^0.8.1",
     "@types/busboy": "^0.2.3",
     "@types/cron": "^1.7.2",
     "@types/minio": "^7.0.7",
@@ -34,8 +35,10 @@
     "@dustinrouillard/database-connectors": "^1.0.7",
     "@dustinrouillard/fastify-security": "^1.0.11",
     "@dustinrouillard/fastify-utilities": "^1.2.21",
+    "amqplib": "^0.8.0",
     "cron": "^1.8.2",
     "dotenv": "^8.2.0",
+    "erlpack": "^0.1.3",
     "fastify": "^3.20.2",
     "fastify-cors": "^4.1.0",
     "fastify-multipart": "^4.0.0",
