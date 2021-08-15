@@ -20,7 +20,7 @@ export const changes = <T extends { [key: string]: any }>(
         // u = unique for things like arrays
         u = false;
 
-      if (typeof e === 'object' && !(e instanceof Array) && !!e && !isDate(e)) {
+      if (typeof e === 'object' && !(e instanceof Array) && !!e && !isDate(e as unknown as Date)) {
         const change = changes(e, c);
         return Object.entries(change).length > 0 ? [key, change] : null;
       }

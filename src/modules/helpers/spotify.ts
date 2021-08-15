@@ -17,7 +17,7 @@ async function SongChanged(song: InternalPlayerResponse): Promise<void> {
 
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
-  const changed = await changes(current, song);
+  const changed = await changes<InternalPlayerResponse>(current, song);
   Debug(changed);
 
   // TODO: SEND TO RABBITMQ
