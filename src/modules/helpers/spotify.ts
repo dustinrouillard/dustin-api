@@ -137,7 +137,7 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
     current = { is_playing: false };
   }
 
-  if (JSON.parse(await RedisClient.get('spotify/current') as string) != current)
+  if ((await RedisClient.get('spotify/current') as string) !== JSON.stringify(current))
     SongChanged(current);
 
   return current;
