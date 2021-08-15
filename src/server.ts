@@ -18,7 +18,7 @@ const server = fastify();
 SetConfig({ disableTimestamp: true });
 
 // Register request logger
-server.register(Logger());
+server.register(Logger({ ignoredRoutes: ['/spotify', '/health'] }));
 server.register(fastifyMultipart);
 
 server.register(fastifyCors, {

@@ -1,6 +1,9 @@
 # Built code
 dist
 
+# Bruh
+.vscode
+
 # Mac is bad
 .DS_Store
 
