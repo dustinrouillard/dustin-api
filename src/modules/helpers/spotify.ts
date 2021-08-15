@@ -1,7 +1,7 @@
 import qs from 'querystring';
 
 import { Fetch, RequestOptions } from '@dustinrouillard/fastify-utilities/modules/fetch';
-import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
+import { Debug, Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 
 import { SpotifyConfig, BaseURL } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
@@ -10,11 +10,17 @@ import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory, Item, S
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
+import { changes } from 'modules/utils/changes';
 
 async function SongChanged(song: InternalPlayerResponse): Promise<void> {
-  await RedisClient.set('spotify/current', JSON.stringify(song));
-  // TODO: SEND TO RABBITMQ
+  const current = JSON.parse(await RedisClient.get('spotify/current') as string);
 
+  await RedisClient.set('spotify/current', JSON.stringify(song));
+
+  const changed = await changes(current, song);
+  Debug(changed);
+
+  // TODO: SEND TO RABBITMQ
 }
 
 export async function CheckForConfig(): Promise<void> {
