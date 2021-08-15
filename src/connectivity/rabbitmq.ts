@@ -8,7 +8,7 @@ export const RabbitConfig = {
   Username: process.env.RABBIT_USERNAME || 'rabbit',
   Password: process.env.RABBIT_PASSWORD || 'docker',
   Host: process.env.RABBIT_HOST || '127.0.0.1',
-  Port: process.env.RABBIT_PORT || '5672',
+  Port: Number(process.env.RABBIT_PORT) || 5672,
   Uri: process.env.RABBIT_URI as string,
   Queues: process.env.RABBIT_QUEUES?.split(',') || [process.env.RABBIT_QUEUE]
 };
