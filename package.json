@@ -37,6 +37,7 @@
     "@dustinrouillard/fastify-utilities": "^1.2.21",
     "amqplib": "^0.8.0",
     "cron": "^1.8.2",
+    "deep-object-diff": "^1.1.0",
     "dotenv": "^8.2.0",
     "erlpack": "^0.1.3",
     "fastify": "^3.20.2",

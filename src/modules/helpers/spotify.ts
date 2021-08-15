@@ -6,12 +6,12 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { pack } from 'erlpack';
 import { SpotifyConfig, BaseURL } from 'config';
 import { writeFileSync, readFileSync } from 'fs';
+import { diff } from 'deep-object-diff';
 
 import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory, Item, SpotifyArtistItem } from 'modules/interfaces/ISpotify';
 import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
-import { changes } from 'modules/utils/changes';
 import { RabbitChannel } from '../../connectivity/rabbitmq';
 
 export enum IngestTypes {
@@ -20,10 +20,9 @@ export enum IngestTypes {
 
 async function SongChanged(song: InternalPlayerResponse): Promise<void> {
   const current = JSON.parse(await RedisClient.get('spotify/current') as string);
-
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
-  const changed = await changes<InternalPlayerResponse>(current, song);
+  const changed = diff(current, song);
 
   // TODO: SEND TO RABBITMQ
   RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
