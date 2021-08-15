@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  docker-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Pull and build, then push
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}/dustin-rest:latest,ghcr.io/${{ github.repository }}/api:${{ github.sha }}
+
+      # Kubernetes deployment
+      - uses: actions/checkout@master
+      - name: Deploy to cluster
+        uses: danielr1996/kubectl-action@1.0.0
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          args: set image --record deployment/dustin-rest dustin-rest=ghcr.io/${{ github.repository }}/api:${{ github.sha }}
+      - name: Verify deployment
+        uses: danielr1996/kubectl-action@1.0.0
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          args: rollout status deployment/dustin-rest
