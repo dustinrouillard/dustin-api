@@ -125,6 +125,8 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
     headers: { authorization: `Bearer ${SpotifyAccount().access}` }
   });
 
+  if (!current_track) return { is_playing: false };
+
   if (!['track', 'episode'].includes(current_track.currently_playing_type)) return { is_playing: false };
 
   let current: InternalPlayerResponse;
