@@ -1,16 +1,16 @@
 import 'module-alias/register';
 
-import fastify from 'fastify';
-import fastifyCors from 'fastify-cors';
-import fastifyMultipart from 'fastify-multipart';
-
 import { PortConfig } from './modules/config';
 
 import { Log, SetConfig } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { Logger, Missing } from '@dustinrouillard/fastify-utilities/modules/request';
+SetConfig({ disableTimestamp: true });
+
+import fastify from 'fastify';
+import fastifyCors from 'fastify-cors';
+import fastifyMultipart from 'fastify-multipart';
 
 const server = fastify();
-SetConfig({ disableTimestamp: true });
 
 import 'tasks';
 import { AuthenticatedRoutes, UnauthenticatedRoutes, TaskRoutes } from './routes';
