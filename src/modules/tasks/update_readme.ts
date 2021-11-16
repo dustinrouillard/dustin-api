@@ -71,7 +71,7 @@ export async function UpdateGitHubReadme(): Promise<void> {
         sha: readme_md.sha,
         author: {
           name: 'dstn.to - API Automation',
-          email: 'code@dstn.to'
+          email: 'api@dstn.to'
         }
       }
     });
