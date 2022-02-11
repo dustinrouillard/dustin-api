@@ -42,7 +42,7 @@
     "erlpack": "^0.1.3",
     "fastify": "^3.20.2",
     "fastify-cors": "^4.1.0",
-    "fastify-multipart": "^4.0.0",
+    "fastify-multipart": "^5.3.1",
     "file-type": "^14.6.2",
     "minio": "^7.0.18",
     "module-alias": "^2.2.2",
