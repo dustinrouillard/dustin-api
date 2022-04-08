@@ -138,7 +138,7 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
       item_type: current_track.item.type,
       item_author: current_track.item.type == 'episode' ? current_track.item.show?.name : current_track.item.artists.map((artist) => artist.name).join(', '),
       item_id: current_track.item.id,
-      item_image: current_track.item.type == 'episode' ? current_track.item.show?.images[0].url : current_track.item.album?.images[0].url,
+      item_image: current_track.item.type == 'episode' ? current_track.item.show?.images[0]?.url : current_track.item.album?.images[0]?.url,
       item_progress: current_track.progress_ms,
       item_length_ms: current_track.item.duration_ms,
       started_at: current_track.timestamp
