@@ -43,7 +43,7 @@
     "fastify": "^3.20.2",
     "fastify-cors": "^4.1.0",
     "fastify-multipart": "^4.0.0",
-    "file-type": "^14.6.2",
+    "file-type": "^16.5.4",
     "minio": "^7.0.18",
     "module-alias": "^2.2.2",
     "xml2js": "^0.4.23"
