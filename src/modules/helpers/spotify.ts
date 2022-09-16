@@ -19,7 +19,7 @@ export enum IngestTypes {
 }
 
 async function SongChanged(song: InternalPlayerResponse): Promise<void> {
-  const current = JSON.parse(await RedisClient.get('spotify/current') as string);
+  const current = JSON.parse((await RedisClient.get('spotify/current')) as string);
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
   const changed = diff(current, song);
@@ -64,12 +64,15 @@ export async function SetupSpotify(code: string): Promise<void> {
       authorization: `Basic ${Buffer.from(`${SpotifyConfig.Id}:${SpotifyConfig.Secret}`).toString('base64')}`,
       'content-type': 'application/x-www-form-urlencoded'
     },
+    raw: true,
     body: qs.stringify({
       code,
       grant_type: 'authorization_code',
       redirect_uri: `${BaseURL}/spotify/callback`
     })
   });
+
+  console.log('REQUEST AUTH DEBUG', authorization_tokens._response);
 
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
@@ -117,7 +120,7 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
 }
 
 export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
-  return JSON.parse(await RedisClient.get('spotify/current') || '') || { is_playing: false };
+  return JSON.parse((await RedisClient.get('spotify/current')) || '') || { is_playing: false };
 }
 
 export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResponse> {
@@ -148,8 +151,7 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
     current = { is_playing: false };
   }
 
-  if ((await RedisClient.get('spotify/current') as string) !== JSON.stringify(current))
-    SongChanged(current);
+  if (((await RedisClient.get('spotify/current')) as string) !== JSON.stringify(current)) SongChanged(current);
 
   return current;
 }
@@ -178,8 +180,8 @@ export async function GetSongsInformation(ids: string[]): Promise<SpotifyTrack[]
         track.type == 'episode'
           ? [track.show?.name || '']
           : artists
-            .filter((artist) => track.artists.map((trackArtist) => trackArtist.id).includes(artist.id))
-            .map((artist) => ({ id: artist.id, name: artist.name, image: artist.images[0].url, followers: artist.followers.total, popularity: artist.popularity, genres: artist.genres })),
+              .filter((artist) => track.artists.map((trackArtist) => trackArtist.id).includes(artist.id))
+              .map((artist) => ({ id: artist.id, name: artist.name, image: artist.images[0].url, followers: artist.followers.total, popularity: artist.popularity, genres: artist.genres })),
       album: track.type != 'episode' ? { id: track.album.id, name: track.album.name, image: track.type == 'episode' ? track.show?.images[0].url : track.album?.images[0].url } : undefined,
       explicit: track.explicit,
       duration: track.duration_ms
