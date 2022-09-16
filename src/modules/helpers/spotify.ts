@@ -112,6 +112,7 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
     if (options.headers.authorization) options.headers.authorization = `Bearer ${SpotifyAccount().access}`;
     request = await Fetch(url, options);
   }
+  console.log('REQUEST DEBUG', request.status, url, 'opts', options);
   return request;
 }
 
