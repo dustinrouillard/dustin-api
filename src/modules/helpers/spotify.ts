@@ -72,8 +72,6 @@ export async function SetupSpotify(code: string): Promise<void> {
     })
   });
 
-  console.log('REQUEST AUTH DEBUG', authorization_tokens._response, authorization_tokens);
-
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
     writeFileSync('.config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
@@ -115,7 +113,6 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
     if (options.headers.authorization) options.headers.authorization = `Bearer ${SpotifyAccount().access}`;
     request = await Fetch(url, options);
   }
-  console.log('REQUEST DEBUG', request.status, url, 'opts', options);
   return request;
 }
 
