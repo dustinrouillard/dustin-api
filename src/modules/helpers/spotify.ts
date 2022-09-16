@@ -72,7 +72,7 @@ export async function SetupSpotify(code: string): Promise<void> {
     })
   });
 
-  console.log('REQUEST AUTH DEBUG', authorization_tokens._response);
+  console.log('REQUEST AUTH DEBUG', authorization_tokens._response, authorization_tokens);
 
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
