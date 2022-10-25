@@ -40,7 +40,7 @@ export async function CheckForConfig(): Promise<void> {
 
 export function SpotifyAccount(): { access: string; refresh: string } {
   if (!SpotifyConfig.IsConfigured) throw { code: 'missing_spotify_config' };
-  return JSON.parse(readFileSync('config/.spotif').toString());
+  return JSON.parse(readFileSync('config/.spotify').toString());
 }
 
 export function GetSpotifyAuthorization(): string {
@@ -73,7 +73,7 @@ export async function SetupSpotify(code: string): Promise<void> {
 
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
-    writeFileSync('config/.spotif', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
+    writeFileSync('config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
 
   return;
 }
@@ -97,7 +97,7 @@ export async function RegenerateTokens(): Promise<void> {
   });
 
   // Store the access and refresh token in the .spotify file
-  if (authorization_tokens.access_token) writeFileSync('config/.spotif', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
+  if (authorization_tokens.access_token) writeFileSync('config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
 
   return;
 }
