@@ -10,7 +10,7 @@ import { FollowersListResponse, TwitterUser } from 'modules/interfaces/ITwitter'
 
 export function TwitterAccount(): { access: string } {
   if (!TwitterConfig.IsConfigured) throw { code: 'missing_twitter_config' };
-  return JSON.parse(readFileSync('.config/.twitter').toString());
+  return JSON.parse(readFileSync('config/.twitter').toString());
 }
 
 export async function GenerateToken(): Promise<void> {
@@ -25,7 +25,7 @@ export async function GenerateToken(): Promise<void> {
   });
 
   // Store the access and refresh token in the .spotify file
-  if (authorization_tokens.access_token) writeFileSync('.config/.twitter', JSON.stringify({ access: authorization_tokens.access_token }));
+  if (authorization_tokens.access_token) writeFileSync('config/.twitter', JSON.stringify({ access: authorization_tokens.access_token }));
 
   return;
 }

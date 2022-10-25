@@ -2,7 +2,7 @@ import { Log } from '@dustinrouillard/fastify-utilities/modules/logger';
 import { Connection, connect, Channel } from 'amqplib';
 
 export let RabbitClient: Connection;
-export let RabbitChannel: Channel
+export let RabbitChannel: Channel;
 
 export const RabbitConfig = {
   Username: process.env.RABBIT_USERNAME || 'rabbit',
@@ -13,13 +13,16 @@ export const RabbitConfig = {
   Queues: process.env.RABBIT_QUEUES?.split(',') || [process.env.RABBIT_QUEUE]
 };
 
-if (!RabbitConfig.Uri) RabbitConfig.Uri = process.env.RABBIT_URI || `amqp://${RabbitConfig.Username && !RabbitConfig.Password ? `${RabbitConfig.Username}@` : `${RabbitConfig.Username}:${RabbitConfig.Password}@`}${RabbitConfig.Host}:${RabbitConfig.Port}`;
+if (!RabbitConfig.Uri)
+  RabbitConfig.Uri =
+    process.env.RABBIT_URI ||
+    `amqp://${RabbitConfig.Username && !RabbitConfig.Password ? `${RabbitConfig.Username}@` : `${RabbitConfig.Username}:${RabbitConfig.Password}@`}${RabbitConfig.Host}:${RabbitConfig.Port}`;
 
-(async (): Promise<void> => {
-  RabbitClient = await connect(RabbitConfig.Uri);
-  RabbitChannel = await RabbitClient.createChannel();
+// (async (): Promise<void> => {
+//   RabbitClient = await connect(RabbitConfig.Uri);
+//   RabbitChannel = await RabbitClient.createChannel();
 
-  if (RabbitConfig.Queues.length > 0) for (const queue of RabbitConfig.Queues) RabbitChannel.assertQueue(queue as string);
+//   if (RabbitConfig.Queues.length > 0) for (const queue of RabbitConfig.Queues) RabbitChannel.assertQueue(queue as string);
 
-  Log('RabbitMQ: Connected');
-})();
+//   Log('RabbitMQ: Connected');
+// })();

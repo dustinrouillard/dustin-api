@@ -28,13 +28,13 @@ export const TwitterConfig = {
   Username: process.env.TWITTER_USERNAME || '',
   ApiKey: process.env.TWITTER_API_KEY || '',
   Secret: process.env.TWITTER_API_SECRET || '',
-  IsConfigured: existsSync('.config/.twitter')
+  IsConfigured: existsSync('config/.twitter')
 };
 
 export const SpotifyConfig = {
   Id: process.env.SPOTIFY_CLIENT_ID || '',
   Secret: process.env.SPOTIFY_CLIENT_SECRET || '',
-  IsConfigured: existsSync('.config/.spotify')
+  IsConfigured: existsSync('config/.spotif')
 };
 
 interface MinioConfig {
@@ -52,6 +52,6 @@ export const MinioStorage = {
   UploadsDomain: process.env.MINIO_UPLOADS_CUSTOM_DOMAIN || '',
   ImagesFolder: process.env.MINIO_IMAGES_FOLDER || '',
   UploadsFolder: process.env.MINIO_UPLOADS_FOLDER || '',
-  IsConfigured: existsSync('.config/.minio.json'),
-  Config: (existsSync('.config/.minio.json') ? JSON.parse(readFileSync('.config/.minio.json').toString()) : {}) as MinioConfig
+  IsConfigured: existsSync('config/.minio.json'),
+  Config: (existsSync('config/.minio.json') ? JSON.parse(readFileSync('config/.minio.json').toString()) : {}) as MinioConfig
 };

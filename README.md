@@ -22,7 +22,6 @@ Right now this api does only useful things to me, well.. Maybe somewhat useful t
 - Fastify (HTTP Server)
 - Redis (Caching)
 - Rabbit (Messaging to and from my Realtime Gateway)
-- Cassandra (Database)
 - Postgres (Database)
 - Kubernetes (Deployment)
 - JWT (Internal Authentication)

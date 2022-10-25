@@ -9,7 +9,6 @@ import { writeFileSync, readFileSync } from 'fs';
 import { diff } from 'deep-object-diff';
 
 import { PlayerResponse, InternalPlayerResponse, DatabaseSpotifyHistory, Item, SpotifyArtistItem } from 'modules/interfaces/ISpotify';
-import { CassandraClient, Types } from '@dustinrouillard/database-connectors/cassandra';
 import { RedisClient } from '@dustinrouillard/database-connectors/redis';
 import { ArtistItem, SpotifyTrack } from 'modules/interfaces/ILocalSpotify';
 import { RabbitChannel } from '../../connectivity/rabbitmq';
@@ -23,7 +22,7 @@ async function SongChanged(song: InternalPlayerResponse): Promise<void> {
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
   const changed = diff(current, song);
-  RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
+  // RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
 }
 
 export async function CheckForConfig(): Promise<void> {
@@ -41,7 +40,7 @@ export async function CheckForConfig(): Promise<void> {
 
 export function SpotifyAccount(): { access: string; refresh: string } {
   if (!SpotifyConfig.IsConfigured) throw { code: 'missing_spotify_config' };
-  return JSON.parse(readFileSync('.config/.spotify').toString());
+  return JSON.parse(readFileSync('config/.spotif').toString());
 }
 
 export function GetSpotifyAuthorization(): string {
@@ -74,7 +73,7 @@ export async function SetupSpotify(code: string): Promise<void> {
 
   // Store the access and refresh token in the .spotify file
   if (authorization_tokens.access_token && authorization_tokens.refresh_token)
-    writeFileSync('.config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
+    writeFileSync('config/.spotif', JSON.stringify({ access: authorization_tokens.access_token, refresh: authorization_tokens.refresh_token }));
 
   return;
 }
@@ -98,7 +97,7 @@ export async function RegenerateTokens(): Promise<void> {
   });
 
   // Store the access and refresh token in the .spotify file
-  if (authorization_tokens.access_token) writeFileSync('.config/.spotify', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
+  if (authorization_tokens.access_token) writeFileSync('config/.spotif', JSON.stringify({ access: authorization_tokens.access_token, refresh: refresh_token }));
 
   return;
 }
@@ -114,10 +113,6 @@ async function RequestWrapper<T = never>(url: string, options: RequestOptions & 
     request = await Fetch(url, options);
   }
   return request;
-}
-
-export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
-  return JSON.parse((await RedisClient.get('spotify/current')) || '') || { is_playing: false };
 }
 
 export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResponse> {
@@ -151,6 +146,10 @@ export async function GetCurrentPlayingFromSpotify(): Promise<InternalPlayerResp
   if (((await RedisClient.get('spotify/current')) as string) !== JSON.stringify(current)) SongChanged(current);
 
   return current;
+}
+
+export async function GetCurrentPlaying(): Promise<InternalPlayerResponse> {
+  return await GetCurrentPlayingFromSpotify();
 }
 
 export async function GetSongsInformation(ids: string[]): Promise<SpotifyTrack[]> {
@@ -187,91 +186,16 @@ export async function GetSongsInformation(ids: string[]): Promise<SpotifyTrack[]
   return parsed_tracks;
 }
 
-export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<{ history: Types.Row[]; cached?: string }> {
-  // Check if a value exists in redis for the supplied range and use that instead
-  if (await RedisClient.exists(`spotify/history/${range || 'day'}`)) return JSON.parse((await RedisClient.get(`spotify/history/${range || 'day'}`)) || '');
-
-  let startDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-  if (range == 'week') startDate = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000);
-  else if (range == 'month') startDate = new Date(new Date().setMonth(new Date().getMonth() - 1));
-
-  // Get end date (right now)
-  const endDate = new Date();
-
-  // Get entries from cassandra between the selected date range
-  const tracks_history = await CassandraClient.execute(
-    'SELECT item_name, item_author, item_type, device_name, device_type, date FROM spotify_song_history WHERE date >= ? AND date <= ? ALLOW FILTERING;',
-    [startDate, endDate]
-  );
-
-  // Make sure there were rows returned
-  if (tracks_history.rowLength <= 0) throw { code: 'no_tracks_in_that_range' };
-
-  // Sort the tracks
-  const sorted = tracks_history.rows.sort((a, b) => b.date - a.date);
-
-  // Store in redis for 5 minutes
-  await RedisClient.set(`spotify/history/${range || 'day'}`, JSON.stringify({ cached: new Date().toUTCString(), history: sorted }), 'ex', 300);
-
-  return { history: sorted };
+export async function PlayingHistory(range: 'day' | 'week' | 'month'): Promise<{ history: any[]; cached?: string }> {
+  return { history: [] };
 }
 
 export async function FetchTopTrack(): Promise<Partial<DatabaseSpotifyHistory & { times: number }>[]> {
-  if (await RedisClient.exists(`spotify/top/tracks`)) return JSON.parse((await RedisClient.get(`spotify/top/tracks`)) || '');
-
-  // Get entries from cassandra between the selected date range
-  const tracks_history = ((await CassandraClient.execute('SELECT item_id, item_name, item_author, item_type, device_name, device_type, date FROM spotify_song_history;'))
-    .rows as unknown) as DatabaseSpotifyHistory[];
-
-  const filtered = tracks_history.map((track) => {
-    return {
-      ...track,
-      times: tracks_history.filter((i) => i.item_id == track.item_id).length
-    };
-  });
-  const sorted = filtered.sort((item, item2) => item2.times - item.times);
-  const remove_dupes = sorted.filter((thing, index, self) => index === self.findIndex((t) => t.item_id === thing.item_id)).slice(0, 5);
-
-  if (!remove_dupes) throw { code: 'no_highest' };
-
-  // Store in redis for 10 minutes
-  await RedisClient.set(`spotify/top/tracks`, JSON.stringify({ cached_at: new Date().toUTCString(), history: remove_dupes }), 'ex', 600);
-
-  return remove_dupes;
+  return [];
 }
 
 export async function FetchTopArtist(): Promise<(ArtistItem & { times: number })[]> {
-  // Check if a value exists in redis for the supplied range and use that instead
-  if (await RedisClient.exists(`spotify/top/artist`)) return JSON.parse((await RedisClient.get(`spotify/top/artist`)) || '');
-
-  // Get entries from cassandra between the selected date range
-  const tracks_history = ((await CassandraClient.execute('SELECT item_id, item_author FROM spotify_song_history;')).rows as unknown) as DatabaseSpotifyHistory[];
-
-  const filtered = tracks_history.map((track) => {
-    return {
-      ...track,
-      times: tracks_history.filter((i) => i.item_author == track.item_author).length
-    };
-  });
-  const sorted = filtered.sort((item, item2) => item2.times - item.times);
-  const remove_dupes = sorted.filter((thing, index, self) => index === self.findIndex((t) => t.item_author === thing.item_author)).slice(0, 5);
-  const lookedup_tracks = await GetSongsInformation(remove_dupes.map((item) => item.item_id));
-  const tracks = remove_dupes.map((item) => {
-    const lookedup_item = lookedup_tracks.filter((itm) => itm.id == item.item_id)[0];
-    return lookedup_item.artist?.map((artist) => {
-      if (typeof artist != 'object') return { name: artist, times: item.times };
-      return { ...artist, times: item.times };
-    });
-  });
-
-  if (!tracks) throw { code: 'no_highest' };
-
-  const data = ([] as (ArtistItem & { times: number })[]).concat(...((tracks as unknown) as (ArtistItem & { times: number })[]));
-
-  // Store in redis for 10 minutes
-  await RedisClient.set(`spotify/top/artist`, JSON.stringify({ cached_at: new Date().toUTCString(), history: data }), 'ex', 600);
-
-  return data;
+  return [];
 }
 
 // Run the check for config function on start to load up the spotify details.
