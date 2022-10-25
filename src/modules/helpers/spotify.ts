@@ -22,7 +22,7 @@ async function SongChanged(song: InternalPlayerResponse): Promise<void> {
   await RedisClient.set('spotify/current', JSON.stringify(song));
 
   const changed = diff(current, song);
-  // RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
+  RabbitChannel.sendToQueue('dstn-gateway-ingest', pack({ t: IngestTypes.SpotifyUpdate, d: changed }));
 }
 
 export async function CheckForConfig(): Promise<void> {

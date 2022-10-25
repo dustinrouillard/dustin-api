@@ -18,11 +18,11 @@ if (!RabbitConfig.Uri)
     process.env.RABBIT_URI ||
     `amqp://${RabbitConfig.Username && !RabbitConfig.Password ? `${RabbitConfig.Username}@` : `${RabbitConfig.Username}:${RabbitConfig.Password}@`}${RabbitConfig.Host}:${RabbitConfig.Port}`;
 
-// (async (): Promise<void> => {
-//   RabbitClient = await connect(RabbitConfig.Uri);
-//   RabbitChannel = await RabbitClient.createChannel();
+(async (): Promise<void> => {
+  RabbitClient = await connect(RabbitConfig.Uri);
+  RabbitChannel = await RabbitClient.createChannel();
 
-//   if (RabbitConfig.Queues.length > 0) for (const queue of RabbitConfig.Queues) RabbitChannel.assertQueue(queue as string);
+  if (RabbitConfig.Queues.length > 0) for (const queue of RabbitConfig.Queues) RabbitChannel.assertQueue(queue as string);
 
-//   Log('RabbitMQ: Connected');
-// })();
+  Log('RabbitMQ: Connected');
+})();
