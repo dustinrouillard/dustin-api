@@ -34,7 +34,7 @@ export const TwitterConfig = {
 export const SpotifyConfig = {
   Id: process.env.SPOTIFY_CLIENT_ID || '',
   Secret: process.env.SPOTIFY_CLIENT_SECRET || '',
-  IsConfigured: existsSync('config/.spotif')
+  IsConfigured: existsSync('config/.spotify')
 };
 
 interface MinioConfig {
