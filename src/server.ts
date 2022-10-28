@@ -10,6 +10,10 @@ const server = fastify();
 server.register(fastifyMultipart);
 server.register(routes, { prefix: '/v1' });
 
+server.get('/health', (req, reply) => {
+  reply.status(200).send('OK');
+});
+
 server.setNotFoundHandler((req, reply) => {
   reply.status(404).send({ code: 'not_found', message: 'Route not found' });
 });
