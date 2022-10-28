@@ -14,7 +14,7 @@ export const env = envsafe({
     default: 'amqp://rabbit:docker@10.7.20.3:5672'
   }),
   SPOTIFY_REDIRECT: str({
-    default: 'http://rest.dstn.to/v1/spotify/setup',
+    default: 'https://rest.dstn.to/v1/spotify/setup',
     devDefault: 'http://127.0.0.1:8080/v1/spotify/setup'
   }),
   SPOTIFY_CLIENT_ID: str({
