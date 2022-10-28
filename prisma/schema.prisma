@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model spotify_devices {
+  id              Int               @id @default(autoincrement())
+  name            String?
+  type            String?
+  spotify_history spotify_history[]
+}
+
+model spotify_history {
+  id              String          @id
+  type            String          @default("track")
+  name            String
+  artists         Json[]
+  length          Int
+  image           String
+  device          Int             @default(autoincrement())
+  listened_at     DateTime        @default(now()) @db.Timestamptz(6)
+  spotify_devices spotify_devices @relation(fields: [device], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

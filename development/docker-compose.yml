@@ -1,0 +1,29 @@
+services:
+  postgres:
+    container_name: hosting-psql
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+  keydb:
+    container_name: hosting-keydb
+    hostname: keydb
+    image: eqalpha/keydb
+    ports:
+      - 6379:6379
+    volumes:
+      - ./volumes/keydb:/data
+  rabbit:
+    container_name: hosting-rabbit
+    image: rabbitmq:3-management
+    environment:
+      - "RABBITMQ_DEFAULT_USER=rabbit"
+      - "RABBITMQ_DEFAULT_PASS=docker"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./volumes/rabbitmq:/var/lib/rabbitmq/mnesia

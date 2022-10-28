@@ -1,0 +1,11 @@
+dist
+
+node_modules
+
+.env
+.env.*
+!.env.example
+
+volumes
+
+yarn-error.log
