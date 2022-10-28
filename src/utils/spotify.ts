@@ -66,7 +66,7 @@ export async function getOrRegenerateToken() {
       device: { name: json.device.name, type: json.device.type }
     };
 
-    rabbitChannel.sendToQueue('dstn-gateway-ingest', erlpack.pack({ t: RabbitOp.SpotifyUpdate, d: { playing: false, ...current } }));
+    rabbitChannel.sendToQueue('dstn-gateway-ingest', erlpack.pack({ t: RabbitOp.SpotifyUpdate, d: { playing: true, ...current } }));
 
     await keydb.set('spotify/current', JSON.stringify(current));
 
