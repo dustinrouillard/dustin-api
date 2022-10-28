@@ -15,7 +15,7 @@ model spotify_devices {
 }
 
 model spotify_history {
-  id              String          @id
+  id              String
   type            String          @default("track")
   name            String
   artists         Json[]
@@ -24,4 +24,6 @@ model spotify_history {
   device          Int             @default(autoincrement())
   listened_at     DateTime        @default(now()) @db.Timestamptz(6)
   spotify_devices spotify_devices @relation(fields: [device], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([id, listened_at])
 }
