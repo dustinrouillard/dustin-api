@@ -52,10 +52,11 @@ export async function getOrRegenerateToken() {
 
     if (!json || (json && (!['track', 'episode'].includes(json.currently_playing_type) || !json.is_playing))) {
       rabbitChannel.sendToQueue('dstn-gateway-ingest', erlpack.pack({ t: RabbitOp.SpotifyUpdate, d: { playing: false } }));
-      return await keydb.del('spotify/current');
+      return await keydb.set('spotify/current', JSON.stringify({ playing: false }));
     }
 
     const current = {
+      playing: true,
       id: json.item.id,
       type: json.item.type,
       name: json.item.name,
@@ -66,7 +67,7 @@ export async function getOrRegenerateToken() {
       device: { name: json.device.name, type: json.device.type }
     };
 
-    rabbitChannel.sendToQueue('dstn-gateway-ingest', erlpack.pack({ t: RabbitOp.SpotifyUpdate, d: { playing: true, ...current } }));
+    rabbitChannel.sendToQueue('dstn-gateway-ingest', erlpack.pack({ t: RabbitOp.SpotifyUpdate, d: current }));
 
     await keydb.set('spotify/current', JSON.stringify(current));
 
