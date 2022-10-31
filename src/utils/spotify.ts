@@ -46,7 +46,7 @@ export async function getOrRegenerateToken() {
       headers: { authorization: `Bearer ${token}` }
     });
 
-    if (playingReq.status == 204) return await keydb.del('spotify/current');
+    if (playingReq.status == 204) return await keydb.set('spotify/current', JSON.stringify({ playing: false }));
 
     const json = await playingReq.json();
 
