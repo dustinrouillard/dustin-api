@@ -3,7 +3,7 @@ import fastifyMultipart from '@fastify/multipart';
 
 import { env } from './env.js';
 import { routes } from './routes.js';
-import './utils/spotify.js';
+// import './utils/spotify.js';
 
 const server = fastify();
 
