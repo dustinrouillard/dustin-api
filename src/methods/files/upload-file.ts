@@ -90,6 +90,7 @@ export async function uploadFile(req: FastifyRequest<{ Params: { type: string } 
       })
     );
   } catch (error) {
+    console.error(error);
     return res.status(400).send({ code: 'failed_to_put_object', message: 'Failed to put object to s3 bucket' });
   }
 
