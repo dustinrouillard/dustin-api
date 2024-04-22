@@ -13,7 +13,7 @@
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "target": "es2020",
-    "module": "CommonJS",
+    "module": "ESNext",
   },
-  "exclude": ["node_modules"]
+  "exclude": []
 }
