@@ -21,7 +21,7 @@
     "deep-object-diff": "^1.1.7",
     "envsafe": "^2.0.3",
     "erlpack": "^0.1.4",
-    "fastify": "^4.6.0",
+    "fastify": "4.6.0",
     "fastify-plugin": "^4.2.1",
     "file-type": "^18.0.0",
     "otplib": "^12.0.1",
@@ -34,6 +34,6 @@
     "dotenv": "^16.0.2",
     "prisma": "^4.3.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.3"
+    "typescript": "^4.9.5"
   }
 }
