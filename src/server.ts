@@ -7,7 +7,11 @@ import { routes } from './routes.js';
 
 const server = fastify();
 
-server.register(fastifyMultipart);
+server.register(fastifyMultipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024
+  }
+});
 server.register(routes, { prefix: '/v1' });
 
 server.get('/health', (req, reply) => {
